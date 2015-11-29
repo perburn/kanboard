@@ -87,7 +87,7 @@ class LdapAuth extends Base implements PasswordAuthenticationProviderInterface
      * Get user object
      *
      * @access public
-     * @return null|\Kanboard\User\LdapUserProvider
+     * @return null|LdapUserProvider
      */
     public function getUser()
     {

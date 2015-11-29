@@ -84,7 +84,7 @@ class GoogleAuth extends Base implements OAuthAuthenticationProviderInterface
      * Get user object
      *
      * @access public
-     * @return null|\Kanboard\User\GoogleUserProvider
+     * @return null|GoogleUserProvider
      */
     public function getUser()
     {

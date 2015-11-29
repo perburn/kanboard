@@ -66,7 +66,7 @@ class RememberMeAuth extends Base implements PreAuthenticationProviderInterface
      * Get user object
      *
      * @access public
-     * @return null|\Kanboard\User\DatabaseUserProvider
+     * @return null|DatabaseUserProvider
      */
     public function getUser()
     {

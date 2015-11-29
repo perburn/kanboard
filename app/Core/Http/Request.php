@@ -42,19 +42,7 @@ class Request extends Base
     }
 
     /**
-     * Get cookie value
-     *
-     * @access public
-     * @param  string $name
-     * @return string
-     */
-    public function getCookie($name)
-    {
-        return isset($this->cookies[$name]) ? $this->cookies[$name] : '';
-    }
-
-    /**
-     * Get URL string parameter
+     * Get query string string parameter
      *
      * @access public
      * @param  string   $name            Parameter name
@@ -67,7 +55,7 @@ class Request extends Base
     }
 
     /**
-     * Get URL integer parameter
+     * Get query string integer parameter
      *
      * @access public
      * @param  string   $name            Parameter name
@@ -139,7 +127,7 @@ class Request extends Base
      */
     public function getFileContent($name)
     {
-        if (isset($this->files[$name])) {
+        if (isset($this->files[$name]['tmp_name'])) {
             return file_get_contents($this->files[$name]['tmp_name']);
         }
 
@@ -194,6 +182,18 @@ class Request extends Base
     }
 
     /**
+     * Get cookie value
+     *
+     * @access public
+     * @param  string $name
+     * @return string
+     */
+    public function getCookie($name)
+    {
+        return isset($this->cookies[$name]) ? $this->cookies[$name] : '';
+    }
+
+    /**
      * Return a HTTP header value
      *
      * @access public
@@ -229,7 +229,7 @@ class Request extends Base
     }
 
     /**
-     * Returns uri
+     * Return URI
      *
      * @access public
      * @return string
