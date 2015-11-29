@@ -47,6 +47,7 @@ use Pimple\Container;
  * @property \Kanboard\Formatter\TaskFilterCalendarFormatter            $taskFilterCalendarFormatter
  * @property \Kanboard\Formatter\TaskFilterICalendarFormatter           $taskFilterICalendarFormatter
  * @property \Kanboard\Model\Action                                     $action
+ * @property \Kanboard\Model\Authentication                             $authentication
  * @property \Kanboard\Model\Board                                      $board
  * @property \Kanboard\Model\Category                                   $category
  * @property \Kanboard\Model\Color                                      $color
@@ -69,6 +70,7 @@ use Pimple\Container;
  * @property \Kanboard\Model\ProjectPermission                          $projectPermission
  * @property \Kanboard\Model\ProjectNotification                        $projectNotification
  * @property \Kanboard\Model\ProjectNotificationType                    $projectNotificationType
+ * @property \Kanboard\Model\RememberMeSession                          $rememberMeSession
  * @property \Kanboard\Model\Subtask                                    $subtask
  * @property \Kanboard\Model\SubtaskExport                              $subtaskExport
  * @property \Kanboard\Model\SubtaskTimeTracking                        $subtaskTimeTracking

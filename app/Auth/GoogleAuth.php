@@ -18,7 +18,7 @@ class GoogleAuth extends Base implements OAuthAuthenticationProviderInterface
      * User properties
      *
      * @access private
-     * @var \Kanboard\Core\User\UserProviderInterface
+     * @var \Kanboard\User\GoogleUserProvider
      */
     private $user = null;
 
@@ -84,7 +84,7 @@ class GoogleAuth extends Base implements OAuthAuthenticationProviderInterface
      * Get user object
      *
      * @access public
-     * @return \Kanboard\Core\User\UserProviderInterface
+     * @return null|\Kanboard\User\GoogleUserProvider
      */
     public function getUser()
     {
@@ -95,7 +95,7 @@ class GoogleAuth extends Base implements OAuthAuthenticationProviderInterface
      * Get configured OAuth2 service
      *
      * @access public
-     * @return Kanboard\Core\Http\OAuth2
+     * @return \Kanboard\Core\Http\OAuth2
      */
     public function getService()
     {

@@ -65,6 +65,7 @@ class Oauth extends Base
      * Redirect to the provider if no code received
      *
      * @access private
+     * @param string $provider
      */
     private function step1($provider)
     {
@@ -81,6 +82,8 @@ class Oauth extends Base
      * Link or authenticate the user
      *
      * @access private
+     * @param string $provider
+     * @param string $code
      */
     private function step2($provider, $code)
     {
@@ -97,6 +100,7 @@ class Oauth extends Base
      * Link the account
      *
      * @access private
+     * @param string $provider
      */
     private function link($provider)
     {
@@ -116,6 +120,7 @@ class Oauth extends Base
      * Authenticate the account
      *
      * @access private
+     * @param string $provider
      */
     private function authenticate($provider)
     {

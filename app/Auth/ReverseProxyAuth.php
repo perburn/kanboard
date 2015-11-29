@@ -18,7 +18,7 @@ class ReverseProxyAuth extends Base implements PreAuthenticationProviderInterfac
      * User properties
      *
      * @access private
-     * @var \Kanboard\Core\User\UserProviderInterface
+     * @var \Kanboard\User\ReverseProxyUserProvider
      */
     private $user = null;
 
@@ -55,7 +55,7 @@ class ReverseProxyAuth extends Base implements PreAuthenticationProviderInterfac
      * Get user object
      *
      * @access public
-     * @return \Kanboard\Core\User\UserProviderInterface
+     * @return null|\Kanboard\User\ReverseProxyUserProvider
      */
     public function getUser()
     {

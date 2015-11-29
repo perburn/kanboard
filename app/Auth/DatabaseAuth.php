@@ -78,7 +78,7 @@ class DatabaseAuth extends Base implements PasswordAuthenticationProviderInterfa
      * Get user object
      *
      * @access public
-     * @return UserProviderInterface
+     * @return null|\Kanboard\User\DatabaseUserProvider
      */
     public function getUser()
     {

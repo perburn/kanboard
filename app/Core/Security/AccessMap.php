@@ -144,12 +144,10 @@ class AccessMap
         $controller = strtolower($controller);
         $method = strtolower($method);
 
-        if (isset($this->map[$controller][$method])) {
-            return $this->getRoleHierarchy($this->map[$controller][$method]);
-        }
-
-        if (isset($this->map[$controller]['*'])) {
-            return $this->getRoleHierarchy($this->map[$controller]['*']);
+        foreach (array($method, '*') as $key) {
+            if (isset($this->map[$controller][$key])) {
+                return $this->getRoleHierarchy($this->map[$controller][$key]);
+            }
         }
 
         return $this->getRoleHierarchy($this->defaultRole);

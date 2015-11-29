@@ -57,7 +57,7 @@ class RememberMeCookie extends Base
      */
     public function hasCookie()
     {
-        return ! empty($_COOKIE[self::COOKIE_NAME]);
+        return $this->request->getCookie(self::COOKIE_NAME) !== '';
     }
 
     /**
@@ -89,11 +89,13 @@ class RememberMeCookie extends Base
      */
     public function read()
     {
-        if (empty($_COOKIE[self::COOKIE_NAME])) {
+        $cookie = $this->request->getCookie(self::COOKIE_NAME);
+
+        if (empty($cookie)) {
             return false;
         }
 
-        return $this->decode($_COOKIE[self::COOKIE_NAME]);
+        return $this->decode($cookie);
     }
 
     /**

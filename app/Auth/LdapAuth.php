@@ -21,7 +21,7 @@ class LdapAuth extends Base implements PasswordAuthenticationProviderInterface
      * User properties
      *
      * @access private
-     * @var \Kanboard\Core\User\UserProviderInterface
+     * @var \Kanboard\User\LdapUserProvider
      */
     private $user = null;
 
@@ -68,7 +68,7 @@ class LdapAuth extends Base implements PasswordAuthenticationProviderInterface
             if (! empty($profile)) {
                 $this->logger->debug('Found LDAP user profile, checking user credentials now');
 
-                if ($ldap->authenticate($this->getLdapServer(), $profile['ldap_id'], $this->password)) {
+                if ($ldap->authenticate($profile['ldap_id'], $this->password)) {
                     $this->user = new LdapUserProvider($profile);
                     return true;
                 }
@@ -87,7 +87,7 @@ class LdapAuth extends Base implements PasswordAuthenticationProviderInterface
      * Get user object
      *
      * @access public
-     * @return \Kanboard\Core\User\UserProviderInterface
+     * @return null|\Kanboard\User\LdapUserProvider
      */
     public function getUser()
     {

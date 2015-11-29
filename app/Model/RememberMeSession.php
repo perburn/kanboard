@@ -37,11 +37,11 @@ class RememberMeSession extends Base
     public function find($token, $sequence)
     {
         return $this->db
-                    ->table(self::TABLE)
-                    ->eq('token', $token)
-                    ->eq('sequence', $sequence)
-                    ->gt('expiration', time())
-                    ->findOne();
+            ->table(self::TABLE)
+            ->eq('token', $token)
+            ->eq('sequence', $sequence)
+            ->gt('expiration', time())
+            ->findOne();
     }
 
     /**
@@ -54,11 +54,11 @@ class RememberMeSession extends Base
     public function getAll($user_id)
     {
         return $this->db
-                    ->table(self::TABLE)
-                    ->eq('user_id', $user_id)
-                    ->desc('date_creation')
-                    ->columns('id', 'ip', 'user_agent', 'date_creation', 'expiration')
-                    ->findAll();
+            ->table(self::TABLE)
+            ->eq('user_id', $user_id)
+            ->desc('date_creation')
+            ->columns('id', 'ip', 'user_agent', 'date_creation', 'expiration')
+            ->findAll();
     }
 
     /**
@@ -108,9 +108,9 @@ class RememberMeSession extends Base
     public function remove($session_id)
     {
         return $this->db
-                    ->table(self::TABLE)
-                    ->eq('id', $session_id)
-                    ->remove();
+            ->table(self::TABLE)
+            ->eq('id', $session_id)
+            ->remove();
     }
 
     /**
@@ -123,10 +123,10 @@ class RememberMeSession extends Base
     public function cleanup($user_id)
     {
         return $this->db
-                    ->table(self::TABLE)
-                    ->eq('user_id', $user_id)
-                    ->lt('expiration', time())
-                    ->remove();
+            ->table(self::TABLE)
+            ->eq('user_id', $user_id)
+            ->lt('expiration', time())
+            ->remove();
     }
 
     /**

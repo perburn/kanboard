@@ -314,6 +314,9 @@ abstract class Base extends \Kanboard\Core\Base
      * Common method to get project filters
      *
      * @access protected
+     * @param  string $controller
+     * @param  string $action
+     * @return array
      */
     protected function getProjectFilters($controller, $action)
     {

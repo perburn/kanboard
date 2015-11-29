@@ -26,7 +26,7 @@ class Client
      * @param  string  $server
      * @param  string  $username
      * @param  string  $password
-     * @return resource
+     * @return Client
      */
     public static function bind($server, $username = null, $password = null)
     {
@@ -34,9 +34,9 @@ class Client
         $client->open($server);
 
         if (empty($username) && empty($password)) {
-            $this->useAnonymousAuthentication();
+            $client->useAnonymousAuthentication();
         } else {
-            $this->authenticate($username, $password);
+            $client->authenticate($username, $password);
         }
 
         return $client;

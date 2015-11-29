@@ -2,7 +2,6 @@
 
 namespace Kanboard\Model;
 
-use Kanboard\Core\Http\Request;
 use SimpleValidator\Validator;
 use SimpleValidator\Validators;
 use Gregwar\Captcha\CaptchaBuilder;

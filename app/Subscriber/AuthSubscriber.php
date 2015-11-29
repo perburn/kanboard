@@ -4,9 +4,7 @@ namespace Kanboard\Subscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Kanboard\Core\Base;
-use Kanboard\Core\Http\Request;
 use Kanboard\Core\Security\AuthenticationManager;
-use Kanboard\Core\User\UserSync;
 use Kanboard\Core\Session\SessionManager;
 use Kanboard\Event\AuthSuccessEvent;
 

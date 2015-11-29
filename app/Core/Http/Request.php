@@ -23,6 +23,7 @@ class Request extends Base
     private $get;
     private $post;
     private $files;
+    private $cookies;
 
     /**
      * Constructor
@@ -30,13 +31,26 @@ class Request extends Base
      * @access public
      * @param  \Pimple\Container   $container
      */
-    public function __construct(Container $container, array $server = array(), array $get = array(), array $post = array(), array $files = array())
+    public function __construct(Container $container, array $server = array(), array $get = array(), array $post = array(), array $files = array(), array $cookies = array())
     {
         parent::__construct($container);
         $this->server = empty($server) ? $_SERVER : $server;
         $this->get = empty($get) ? $_GET : $get;
         $this->post = empty($post) ? $_POST : $post;
         $this->files = empty($files) ? $_FILES : $files;
+        $this->cookies = empty($cookies) ? $_COOKIE : $cookies;
+    }
+
+    /**
+     * Get cookie value
+     *
+     * @access public
+     * @param  string $name
+     * @return string
+     */
+    public function getCookie($name)
+    {
+        return isset($this->cookies[$name]) ? $this->cookies[$name] : '';
     }
 
     /**

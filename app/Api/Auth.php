@@ -25,7 +25,7 @@ class Auth extends Base
     {
         $this->container['dispatcher']->dispatch('app.bootstrap');
 
-        if ($username !== 'jsonrpc' && ! $this->authentication->hasCaptcha($username) && $this->authentication->authenticate($username, $password)) {
+        if ($username !== 'jsonrpc' && ! $this->authenticationManager->passwordAuthentication($username, $password)) {
             $this->checkProcedurePermission(true, $method);
             $this->userSession->initialize($this->user->getByUsername($username));
         } elseif ($username === 'jsonrpc' && $password === $this->config->get('api_token')) {

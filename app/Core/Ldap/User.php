@@ -41,15 +41,14 @@ class User
      */
     public static function getProfile(Client $client, $baseDn, $query)
     {
-        $query = new self(new Query($client));
-        return $query->find($baseDn, $query);
+        $self = new self(new Query($client));
+        return $self->find($baseDn, $query);
     }
 
     /**
      * Find user
      *
      * @access public
-     * @param  resource  $ldap
      * @param  string    $baseDn
      * @param  string    $query
      * @return array

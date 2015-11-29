@@ -49,8 +49,8 @@ class AuthenticationManager extends Base
      * Register a new authentication provider
      *
      * @access public
-     * @param  string $provider
-     * @return AuthenticationProviderInterface
+     * @param  string $name
+     * @return AuthenticationProviderInterface|OAuthAuthenticationProviderInterface|PasswordAuthenticationProviderInterface|PreAuthenticationProviderInterface
      */
     public function getProvider($name)
     {
