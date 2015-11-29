@@ -67,10 +67,11 @@ class RememberMeCookie extends Base
      * @param  string   $token        Session token
      * @param  string   $sequence     Sequence token
      * @param  string   $expiration   Cookie expiration
+     * @return boolean
      */
     public function write($token, $sequence, $expiration)
     {
-        setcookie(
+        return setcookie(
             self::COOKIE_NAME,
             $this->encode($token, $sequence),
             $expiration,
@@ -102,10 +103,11 @@ class RememberMeCookie extends Base
      * Remove the cookie
      *
      * @access public
+     * @return boolean
      */
     public function remove()
     {
-        setcookie(
+        return setcookie(
             self::COOKIE_NAME,
             '',
             time() - 3600,

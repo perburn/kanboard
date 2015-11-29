@@ -33,13 +33,15 @@ class RequestTest extends Base
         $this->assertEquals(123, $request->getIntegerParam('myvar'));
     }
 
-    public function getValues()
+    public function testGetValues()
     {
         $request = new Request($this->container, array(), array(), array('myvar' => 'myvalue'), array(), array());
         $this->assertEmpty($request->getValue('myvar'));
 
         $request = new Request($this->container, array(), array(), array('myvar' => 'myvalue', 'csrf_token' => $this->container['token']->getCSRFToken()), array(), array());
         $this->assertEquals('myvalue', $request->getValue('myvar'));
+
+        $request = new Request($this->container, array(), array(), array('myvar' => 'myvalue', 'csrf_token' => $this->container['token']->getCSRFToken()), array(), array());
         $this->assertEquals(array('myvar' => 'myvalue'), $request->getValues());
     }
 
@@ -166,5 +168,8 @@ class RequestTest extends Base
 
         $request = new Request($this->container, array('REMOTE_ADDR' => '192.168.0.1'), array(), array(), array(), array());
         $this->assertEquals('192.168.0.1', $request->getIpAddress());
+
+        $request = new Request($this->container, array('REMOTE_ADDR' => ''), array(), array(), array(), array());
+        $this->assertEquals('Unknown', $request->getIpAddress());
     }
 }
