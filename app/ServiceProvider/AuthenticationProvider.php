@@ -75,7 +75,25 @@ class AuthenticationProvider implements ServiceProviderInterface
         $acl->setRoleHierarchy(Role::PROJECT_MANAGER, array(Role::PROJECT_MEMBER, Role::PROJECT_VIEWER));
         $acl->setRoleHierarchy(Role::PROJECT_MEMBER, array(Role::PROJECT_VIEWER));
 
-        $acl->add('Board', 'save', Role::PROJECT_MEMBER);
+        $acl->add('Action', '*', Role::PROJECT_MANAGER);
+        $acl->add('Analytic', '*', Role::PROJECT_MANAGER);
+        $acl->add('Board', array('save', 'changeAssignee', 'updateAssignee', 'changeCategory', 'updateCategory'), Role::PROJECT_MEMBER);
+        $acl->add('Calendar', 'save', Role::PROJECT_MEMBER);
+        $acl->add('Category', '*', Role::PROJECT_MANAGER);
+        $acl->add('Column', '*', Role::PROJECT_MANAGER);
+        $acl->add('Comment', '*', Role::PROJECT_MEMBER);
+        $acl->add('Customfilter', '*', Role::PROJECT_MEMBER);
+        $acl->add('Export', '*', Role::PROJECT_MANAGER);
+        $acl->add('File', array('screenshot', 'create', 'save', 'remove', 'confirm'), Role::PROJECT_MEMBER);
+        $acl->add('Gantt', '*', Role::PROJECT_MANAGER);
+        $acl->add('Project', array('share', 'integrations', 'notifications', 'edit', 'update', 'users', 'allowEverybody', 'allow', 'role', 'revoke', 'duplicate', 'disable', 'enable'), Role::PROJECT_MANAGER);
+        $acl->add('Projectinfo', '*', Role::PROJECT_MANAGER);
+        $acl->add('Subtask', '*', Role::PROJECT_MEMBER);
+        $acl->add('Swimlane', '*', Role::PROJECT_MANAGER);
+        $acl->add('Task', 'remove', Role::PROJECT_MEMBER);
+        $acl->add('Taskcreation', '*', Role::PROJECT_MEMBER);
+        $acl->add('Taskmodification', '*', Role::PROJECT_MEMBER);
+        $acl->add('Timer', '*', Role::PROJECT_MEMBER);
 
         return $acl;
     }
@@ -98,6 +116,7 @@ class AuthenticationProvider implements ServiceProviderInterface
         $acl->add('Auth', array('login', 'check', 'captcha'), Role::APP_PUBLIC);
         $acl->add('Webhook', '*', Role::APP_PUBLIC);
         $acl->add('Task', 'readonly', Role::APP_PUBLIC);
+        $acl->add('Board', 'readonly', Role::APP_PUBLIC);
         $acl->add('Ical', '*', Role::APP_PUBLIC);
         $acl->add('Feed', '*', Role::APP_PUBLIC);
 
