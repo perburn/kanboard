@@ -170,7 +170,7 @@ class User extends Base
     {
         $user = $this->getUser();
         $this->response->html($this->layout('user/sessions', array(
-            'sessions' => $this->authentication->backend('rememberMe')->getAll($user['id']),
+            'sessions' => $this->rememberMeSession->getAll($user['id']),
             'user' => $user,
         )));
     }
@@ -184,8 +184,8 @@ class User extends Base
     {
         $this->checkCSRFParam();
         $user = $this->getUser();
-        $this->authentication->backend('rememberMe')->remove($this->request->getIntegerParam('id'));
-        $this->response->redirect($this->helper->url->to('user', 'session', array('user_id' => $user['id'])));
+        $this->rememberMeSession->remove($this->request->getIntegerParam('id'));
+        $this->response->redirect($this->helper->url->to('user', 'sessions', array('user_id' => $user['id'])));
     }
 
     /**

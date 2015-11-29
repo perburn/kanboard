@@ -4,6 +4,7 @@ namespace Kanboard\Model;
 
 use SimpleValidator\Validator;
 use SimpleValidator\Validators;
+use Kanboard\Core\Security\Role;
 
 /**
  * Project permission model
@@ -19,6 +20,29 @@ class ProjectPermission extends Base
      * @var string
      */
     const TABLE = 'project_has_users';
+
+    /**
+     * Get role of the user
+     *
+     * @access public
+     * @param  integer  $project_id
+     * @param  integer  $user_id
+     * @return string
+     */
+    public function getRole($project_id, $user_id)
+    {
+        $member = $this->db->table(self::TABLE)->eq('user_id', $user_id)->eq('project_id', $project_id)->findOne();
+
+        if (isset($member['is_owner'])) {
+            return $member['is_owner'] == 1 ? Role::PROJECT_MANAGER : Role::PROJECT_MEMBER;
+        }
+
+        if ($this->isEverybodyAllowed($project_id)) {
+            return Role::PROJECT_MEMBER;
+        }
+
+        return '';
+    }
 
     /**
      * Get a list of people that can be assigned for tasks

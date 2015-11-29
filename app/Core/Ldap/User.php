@@ -24,13 +24,29 @@ class User
      * @access public
      * @param  Query   $query
      */
-    public function __construct(Query $query = null)
+    public function __construct(Query $query)
     {
-        $this->query = $query ?: new Query;
+        $this->query = $query;
     }
 
     /**
-     * Get user profile
+     * Get user profile (helper)
+     *
+     * @static
+     * @access public
+     * @param  Client    $client
+     * @param  string    $baseDn
+     * @param  string    $query
+     * @return array
+     */
+    public static function getProfile(Client $client, $baseDn, $query)
+    {
+        $query = new self(new Query($client));
+        return $query->find($baseDn, $query);
+    }
+
+    /**
+     * Find user
      *
      * @access public
      * @param  resource  $ldap
@@ -38,9 +54,9 @@ class User
      * @param  string    $query
      * @return array
      */
-    public function getProfile($ldap, $baseDn, $query)
+    public function find($baseDn, $query)
     {
-        $this->query->execute($ldap, $baseDn, $query, $this->getAttributes());
+        $this->query->execute($baseDn, $query, $this->getAttributes());
         $profile = array();
 
         if ($this->query->hasResult()) {

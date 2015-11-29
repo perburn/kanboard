@@ -2,6 +2,8 @@
 
 namespace Kanboard\Helper;
 
+use Kanboard\Core\Security\Role;
+
 /**
  * User helpers
  *
@@ -95,7 +97,9 @@ class User extends \Kanboard\Core\Base
      */
     public function isProjectAdmin()
     {
-        return $this->userSession->isProjectAdmin();
+        //TODO: fixme
+        return false;
+        //return $this->userSession->isProjectAdmin();
     }
 
     /**
@@ -109,8 +113,9 @@ class User extends \Kanboard\Core\Base
         if ($this->userSession->isAdmin()) {
             return true;
         }
-
-        return $this->memoryCache->proxy($this->container['acl'], 'handleProjectAdminPermissions', $project_id);
+        //TODO: fixme
+        // return $this->userSession->getRole() === Role::APP_MANAGER &&
+            // in_array($this->memoryCache->proxy($this->projectPermission, 'getRole', $project_id, $this->userSession->getId()), array(Role::PROJECT_MANAGER, Role::PROJECT_MEMBER));
     }
 
     /**
@@ -125,7 +130,8 @@ class User extends \Kanboard\Core\Base
             return true;
         }
 
-        return $this->memoryCache->proxy($this->container['acl'], 'handleProjectManagerPermissions', $project_id);
+        // TODO: fixme
+        return $this->memoryCache->proxy($this->projectPermission, 'getRole', $project_id, $this->userSession->getId()) === Role::PROJECT_MANAGER;
     }
 
     /**

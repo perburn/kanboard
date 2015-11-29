@@ -2,26 +2,80 @@
 
 namespace Kanboard\Subscriber;
 
-use Kanboard\Core\Http\Request;
-use Kanboard\Event\AuthEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Kanboard\Core\Base;
+use Kanboard\Core\Http\Request;
+use Kanboard\Core\Security\AuthenticationManager;
+use Kanboard\Core\User\UserSync;
+use Kanboard\Core\Session\SessionManager;
+use Kanboard\Event\AuthSuccessEvent;
 
-class AuthSubscriber extends \Kanboard\Core\Base implements EventSubscriberInterface
+/**
+ * Authentication Subscriber
+ *
+ * @package subscriber
+ * @author  Frederic Guillot
+ */
+class AuthSubscriber extends Base implements EventSubscriberInterface
 {
+    /**
+     * Get event listeners
+     *
+     * @static
+     * @access public
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return array(
-            'auth.success' => array('onSuccess', 0),
+            AuthenticationManager::EVENT_SUCCESS => 'afterLogin',
+            SessionManager::EVENT_DESTROY => 'afterLogout',
         );
     }
 
-    public function onSuccess(AuthEvent $event)
+    /**
+     * After Login callback
+     *
+     * @access public
+     * @param  AuthSuccessEvent $event
+     */
+    public function afterLogin(AuthSuccessEvent $event)
     {
+        $userAgent = $this->request->getUserAgent();
+        $ipAddress = $this->request->getIpAddress();
+
         $this->lastLogin->create(
             $event->getAuthType(),
-            $event->getUserId(),
-            Request::getIpAddress(),
-            Request::getUserAgent()
+            $this->userSession->getId(),
+            $ipAddress,
+            $userAgent
         );
+
+        $this->sessionStorage->hasSubtaskInProgress = $this->subtask->hasSubtaskInProgress($this->userSession->getId());
+
+        if (isset($this->sessionStorage->hasRememberMe) && $this->sessionStorage->hasRememberMe) {
+            $session = $this->rememberMeSession->create($this->userSession->getId(), $ipAddress, $userAgent);
+            $this->rememberMeCookie->write($session['token'], $session['sequence'], $session['expiration']);
+        }
+    }
+
+    /**
+     * Destroy RememberMe session on logout
+     *
+     * @access public
+     */
+    public function afterLogout()
+    {
+        $credentials = $this->rememberMeCookie->read();
+
+        if ($credentials !== false) {
+            $session = $this->rememberMeSession->find($credentials['token'], $credentials['sequence']);
+
+            if (! empty($session)) {
+                $this->rememberMeSession->remove($session['id']);
+            }
+
+            $this->rememberMeCookie->remove();
+        }
     }
 }

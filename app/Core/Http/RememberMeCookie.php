@@ -1,0 +1,116 @@
+<?php
+
+namespace Kanboard\Core\Http;
+
+use Kanboard\Core\Base;
+
+/**
+ * Remember Me Cookie
+ *
+ * @package  http
+ * @author   Frederic Guillot
+ */
+class RememberMeCookie extends Base
+{
+    /**
+     * Cookie name
+     *
+     * @var string
+     */
+    const COOKIE_NAME = 'KB_RM';
+
+    /**
+     * Encode the cookie
+     *
+     * @access public
+     * @param  string   $token        Session token
+     * @param  string   $sequence     Sequence token
+     * @return string
+     */
+    public function encode($token, $sequence)
+    {
+        return implode('|', array($token, $sequence));
+    }
+
+    /**
+     * Decode the value of a cookie
+     *
+     * @access public
+     * @param  string   $value    Raw cookie data
+     * @return array
+     */
+    public function decode($value)
+    {
+        list($token, $sequence) = explode('|', $value);
+
+        return array(
+            'token' => $token,
+            'sequence' => $sequence,
+        );
+    }
+
+    /**
+     * Return true if the current user has a RememberMe cookie
+     *
+     * @access public
+     * @return bool
+     */
+    public function hasCookie()
+    {
+        return ! empty($_COOKIE[self::COOKIE_NAME]);
+    }
+
+    /**
+     * Write and encode the cookie
+     *
+     * @access public
+     * @param  string   $token        Session token
+     * @param  string   $sequence     Sequence token
+     * @param  string   $expiration   Cookie expiration
+     */
+    public function write($token, $sequence, $expiration)
+    {
+        setcookie(
+            self::COOKIE_NAME,
+            $this->encode($token, $sequence),
+            $expiration,
+            $this->helper->url->dir(),
+            null,
+            $this->request->isHTTPS(),
+            true
+        );
+    }
+
+    /**
+     * Read and decode the cookie
+     *
+     * @access public
+     * @return mixed
+     */
+    public function read()
+    {
+        if (empty($_COOKIE[self::COOKIE_NAME])) {
+            return false;
+        }
+
+        return $this->decode($_COOKIE[self::COOKIE_NAME]);
+    }
+
+    /**
+     * Remove the cookie
+     *
+     * @access public
+     */
+    public function remove()
+    {
+        setcookie(
+            self::COOKIE_NAME,
+            '',
+            time() - 3600,
+            $this->helper->url->dir(),
+            null,
+            $this->request->isHTTPS(),
+            true
+        );
+    }
+}

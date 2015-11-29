@@ -111,48 +111,17 @@ class User extends Base
      * Get a specific user by the Google id
      *
      * @access public
-     * @param  string  $google_id  Google unique id
+     * @param  string  $column
+     * @param  string  $id
      * @return array|boolean
      */
-    public function getByGoogleId($google_id)
+    public function getByExternalId($column, $id)
     {
-        if (empty($google_id)) {
+        if (empty($id)) {
             return false;
         }
 
-        return $this->db->table(self::TABLE)->eq('google_id', $google_id)->findOne();
-    }
-
-    /**
-     * Get a specific user by the Github id
-     *
-     * @access public
-     * @param  string  $github_id  Github user id
-     * @return array|boolean
-     */
-    public function getByGithubId($github_id)
-    {
-        if (empty($github_id)) {
-            return false;
-        }
-
-        return $this->db->table(self::TABLE)->eq('github_id', $github_id)->findOne();
-    }
-
-    /**
-     * Get a specific user by the Gitlab id
-     *
-     * @access public
-     * @param  string  $gitlab_id  Gitlab user id
-     * @return array|boolean
-     */
-    public function getByGitlabId($gitlab_id)
-    {
-        if (empty($gitlab_id)) {
-            return false;
-        }
-
-        return $this->db->table(self::TABLE)->eq('gitlab_id', $gitlab_id)->findOne();
+        return $this->db->table(self::TABLE)->eq($column, $id)->findOne();
     }
 
     /**

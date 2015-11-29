@@ -26,6 +26,8 @@ $container = new Pimple\Container;
 $container->register(new Kanboard\ServiceProvider\SessionProvider);
 $container->register(new Kanboard\ServiceProvider\LoggingProvider);
 $container->register(new Kanboard\ServiceProvider\DatabaseProvider);
+$container->register(new Kanboard\ServiceProvider\AuthenticationProvider);
+$container->register(new Kanboard\ServiceProvider\NotificationProvider);
 $container->register(new Kanboard\ServiceProvider\ClassProvider);
 $container->register(new Kanboard\ServiceProvider\EventDispatcherProvider);
 

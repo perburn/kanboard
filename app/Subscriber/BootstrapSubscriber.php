@@ -9,9 +9,7 @@ class BootstrapSubscriber extends \Kanboard\Core\Base implements EventSubscriber
     public static function getSubscribedEvents()
     {
         return array(
-            'session.bootstrap' => array('setup', 0),
-            'api.bootstrap' => array('setup', 0),
-            'console.bootstrap' => array('setup', 0),
+            'app.bootstrap' => array('setup', 0),
         );
     }
 

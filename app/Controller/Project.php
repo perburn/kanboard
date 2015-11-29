@@ -222,7 +222,7 @@ class Project extends Base
     }
 
     /**
-     * Allow a specific user (admin only)
+     * Allow a specific user
      *
      * @access public
      */

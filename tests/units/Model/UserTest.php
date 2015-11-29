@@ -47,33 +47,27 @@ class UserTest extends Base
         $this->assertEmpty($u->getByEmail(''));
     }
 
-    public function testGetByGitlabId()
+    public function testGetByExternalId()
     {
         $u = new User($this->container);
         $this->assertNotFalse($u->create(array('username' => 'user1', 'password' => '123456', 'gitlab_id' => '1234')));
 
-        $this->assertNotEmpty($u->getByGitlabId('1234'));
-        $this->assertEmpty($u->getByGitlabId(''));
-    }
+        $this->assertNotEmpty($u->getByExternalId('gitlab_id', '1234'));
+        $this->assertEmpty($u->getByExternalId('gitlab_id', ''));
 
-    public function testGetByGithubId()
-    {
         $u = new User($this->container);
-        $this->assertNotFalse($u->create(array('username' => 'user1', 'password' => '123456', 'github_id' => 'plop')));
-        $this->assertNotFalse($u->create(array('username' => 'user2', 'password' => '123456', 'github_id' => '')));
+        $this->assertNotFalse($u->create(array('username' => 'user2', 'password' => '123456', 'github_id' => 'plop')));
+        $this->assertNotFalse($u->create(array('username' => 'user3', 'password' => '123456', 'github_id' => '')));
 
-        $this->assertNotEmpty($u->getByGithubId('plop'));
-        $this->assertEmpty($u->getByGithubId(''));
-    }
+        $this->assertNotEmpty($u->getByExternalId('github_id', 'plop'));
+        $this->assertEmpty($u->getByExternalId('github_id', ''));
 
-    public function testGetByGoogleId()
-    {
         $u = new User($this->container);
-        $this->assertNotFalse($u->create(array('username' => 'user1', 'password' => '123456', 'google_id' => '1234')));
-        $this->assertNotFalse($u->create(array('username' => 'user2', 'password' => '123456', 'google_id' => '')));
+        $this->assertNotFalse($u->create(array('username' => 'user4', 'password' => '123456', 'google_id' => '1234')));
+        $this->assertNotFalse($u->create(array('username' => 'user5', 'password' => '123456', 'google_id' => '')));
 
-        $this->assertNotEmpty($u->getByGoogleId('1234'));
-        $this->assertEmpty($u->getByGoogleId(''));
+        $this->assertNotEmpty($u->getByExternalId('google_id', '1234'));
+        $this->assertEmpty($u->getByExternalId('google_id', ''));
     }
 
     public function testGetByToken()

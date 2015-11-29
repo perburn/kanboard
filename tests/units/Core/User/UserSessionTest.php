@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__.'/../Base.php';
+require_once __DIR__.'/../../Base.php';
 
-use Kanboard\Model\UserSession;
+use Kanboard\Core\User\UserSession;
 
 class UserSessionTest extends Base
 {

@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__.'/../Base.php';
+require_once __DIR__.'/../../Base.php';
 
-use Kanboard\Core\OAuth2;
+use Kanboard\Core\Http\OAuth2;
 
 class OAuth2Test extends Base
 {

@@ -9,19 +9,14 @@ use Kanboard\Core\Plugin\Loader;
 use Kanboard\Core\Mail\Client as EmailClient;
 use Kanboard\Core\ObjectStorage\FileStorage;
 use Kanboard\Core\Paginator;
-use Kanboard\Core\OAuth2;
+use Kanboard\Core\Http\OAuth2;
 use Kanboard\Core\Tool;
 use Kanboard\Core\Http\Client as HttpClient;
-use Kanboard\Model\UserNotificationType;
-use Kanboard\Model\ProjectNotificationType;
-use Kanboard\Notification\Mail as MailNotification;
-use Kanboard\Notification\Web as WebNotification;
 
 class ClassProvider implements ServiceProviderInterface
 {
     private $classes = array(
         'Model' => array(
-            'Acl',
             'Action',
             'Authentication',
             'Board',
@@ -47,6 +42,7 @@ class ClassProvider implements ServiceProviderInterface
             'ProjectPermission',
             'ProjectNotification',
             'ProjectMetadata',
+            'RememberMeSession',
             'Subtask',
             'SubtaskExport',
             'SubtaskTimeTracking',
@@ -69,7 +65,6 @@ class ClassProvider implements ServiceProviderInterface
             'Transition',
             'User',
             'UserImport',
-            'UserSession',
             'UserNotification',
             'UserNotificationType',
             'UserNotificationFilter',
@@ -93,6 +88,7 @@ class ClassProvider implements ServiceProviderInterface
             'Request',
             'Response',
             'Router',
+            'RememberMeCookie',
         ),
         'Core\Cache' => array(
             'MemoryCache',
@@ -102,6 +98,10 @@ class ClassProvider implements ServiceProviderInterface
         ),
         'Core\Security' => array(
             'Token',
+        ),
+        'Core\User' => array(
+            'UserSession',
+            'UserProfile',
         ),
         'Integration' => array(
             'BitbucketWebhook',
@@ -140,20 +140,6 @@ class ClassProvider implements ServiceProviderInterface
             $mailer->setTransport('sendmail', '\Kanboard\Core\Mail\Transport\Sendmail');
             $mailer->setTransport('mail', '\Kanboard\Core\Mail\Transport\Mail');
             return $mailer;
-        };
-
-        $container['userNotificationType'] = function ($container) {
-            $type = new UserNotificationType($container);
-            $type->setType(MailNotification::TYPE, t('Email'), '\Kanboard\Notification\Mail');
-            $type->setType(WebNotification::TYPE, t('Web'), '\Kanboard\Notification\Web');
-            return $type;
-        };
-
-        $container['projectNotificationType'] = function ($container) {
-            $type = new ProjectNotificationType($container);
-            $type->setType('webhook', 'Webhook', '\Kanboard\Notification\Webhook', true);
-            $type->setType('activity_stream', 'ActivityStream', '\Kanboard\Notification\ActivityStream', true);
-            return $type;
         };
 
         $container['pluginLoader'] = new Loader($container);

@@ -1,11 +1,14 @@
 <?php
 
-namespace Kanboard\Model;
+namespace Kanboard\Core\User;
+
+use Kanboard\Core\Base;
+use Kanboard\Core\Security\Role;
 
 /**
  * User Session
  *
- * @package  model
+ * @package  user
  * @author   Frederic Guillot
  */
 class UserSession extends Base
@@ -37,6 +40,23 @@ class UserSession extends Base
     }
 
     /**
+     * Get user application role
+     *
+     * @access public
+     * @return string
+     */
+    public function getRole()
+    {
+        if ($this->sessionStorage->user['is_admin']) {
+            return Role::APP_ADMIN;
+        } elseif ($this->sessionStorage->user['is_project_admin']) {
+            return Role::APP_MANAGER;
+        }
+
+        return Role::APP_USER;
+    }
+
+    /**
      * Return true if the user has validated the 2FA key
      *
      * @access public
@@ -46,7 +66,6 @@ class UserSession extends Base
     {
         return isset($this->sessionStorage->postAuth['validated']) && $this->sessionStorage->postAuth['validated'] === true;
     }
-
     /**
      * Return true if the user has 2FA enabled
      *
@@ -57,7 +76,6 @@ class UserSession extends Base
     {
         return isset($this->sessionStorage->user['twofactor_activated']) && $this->sessionStorage->user['twofactor_activated'] === true;
     }
-
     /**
      * Disable 2FA for the current session
      *
@@ -67,7 +85,6 @@ class UserSession extends Base
     {
         $this->sessionStorage->user['twofactor_activated'] = false;
     }
-
     /**
      * Return true if the logged user is admin
      *
@@ -78,7 +95,6 @@ class UserSession extends Base
     {
         return isset($this->sessionStorage->user['is_admin']) && $this->sessionStorage->user['is_admin'] === true;
     }
-
     /**
      * Return true if the logged user is project admin
      *

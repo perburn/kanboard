@@ -3,7 +3,6 @@
 namespace Kanboard\Api;
 
 use JsonRPC\AuthenticationFailure;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Base class
@@ -24,7 +23,7 @@ class Auth extends Base
      */
     public function checkCredentials($username, $password, $class, $method)
     {
-        $this->container['dispatcher']->dispatch('api.bootstrap', new Event);
+        $this->container['dispatcher']->dispatch('app.bootstrap');
 
         if ($username !== 'jsonrpc' && ! $this->authentication->hasCaptcha($username) && $this->authentication->authenticate($username, $password)) {
             $this->checkProcedurePermission(true, $method);

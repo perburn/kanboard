@@ -3,7 +3,7 @@
 namespace Kanboard\Controller;
 
 use Pimple\Container;
-use Symfony\Component\EventDispatcher\Event;
+use Kanboard\Core\Security\Role;
 
 /**
  * Base controller
@@ -48,6 +48,24 @@ abstract class Base extends \Kanboard\Core\Base
     }
 
     /**
+     * Method executed before each action
+     *
+     * @access public
+     */
+    public function beforeAction($controller, $action)
+    {
+        $this->sessionManager->open();
+        $this->sendHeaders($action);
+        $this->dispatcher->dispatch('app.bootstrap');
+
+        if (! $this->applicationAuthorization->isAllowed($controller, $action, Role::APP_PUBLIC)) {
+            $this->handleAuthentication();
+            $this->checkApplicationAuthorization($controller, $action);
+            $this->checkProjectAuthorization($controller, $action);
+        }
+    }
+
+    /**
      * Send HTTP headers
      *
      * @access private
@@ -70,33 +88,13 @@ abstract class Base extends \Kanboard\Core\Base
     }
 
     /**
-     * Method executed before each action
-     *
-     * @access public
-     */
-    public function beforeAction($controller, $action)
-    {
-        $this->sessionManager->open();
-        $this->sendHeaders($action);
-        $this->container['dispatcher']->dispatch('session.bootstrap', new Event);
-
-        if (! $this->acl->isPublicAction($controller, $action)) {
-            $this->handleAuthentication();
-            $this->handle2FA($controller, $action);
-            $this->handleAuthorization($controller, $action);
-
-            $this->sessionStorage->hasSubtaskInProgress = $this->subtask->hasSubtaskInProgress($this->userSession->getId());
-        }
-    }
-
-    /**
      * Check authentication
      *
-     * @access public
+     * @access private
      */
-    public function handleAuthentication()
+    private function handleAuthentication()
     {
-        if (! $this->authentication->isAuthenticated()) {
+        if (! $this->userSession->isLogged() && ! $this->authenticationManager->preAuthentication()) {
             if ($this->request->isAjax()) {
                 $this->response->text('Not Authorized', 401);
             }
@@ -107,11 +105,47 @@ abstract class Base extends \Kanboard\Core\Base
     }
 
     /**
+     * Check application authorization
+     *
+     * @access private
+     */
+    private function checkApplicationAuthorization($controller, $action)
+    {
+        if (! $this->applicationAuthorization->isAllowed($controller, $action, $this->userSession->getRole())) {
+            $this->forbidden();
+        }
+    }
+
+    /**
+     * Check project authorization
+     *
+     * @access private
+     */
+    private function checkProjectAuthorization($controller, $action)
+    {
+        $project_id = $this->request->getIntegerParam('project_id');
+        $task_id = $this->request->getIntegerParam('task_id');
+
+        // Allow urls without "project_id"
+        if ($task_id > 0 && $project_id === 0) {
+            $project_id = $this->taskFinder->getProjectId($task_id);
+        }
+
+        if ($project_id > 0) {
+            $role = $this->projectPermission->getRole($project_id, $this->userSession->getId());
+
+            if (! $this->projectAuthorization->isAllowed($controller, $action, $role)) {
+                $this->forbidden();
+            }
+        }
+    }
+
+    /**
      * Check 2FA
      *
-     * @access public
+     * @access private
      */
-    public function handle2FA($controller, $action)
+    private function handle2FA($controller, $action)
     {
         $ignore = ($controller === 'twofactor' && in_array($action, array('code', 'check'))) || ($controller === 'auth' && $action === 'logout');
 
@@ -125,32 +159,12 @@ abstract class Base extends \Kanboard\Core\Base
     }
 
     /**
-     * Check page access and authorization
-     *
-     * @access public
-     */
-    public function handleAuthorization($controller, $action)
-    {
-        $project_id = $this->request->getIntegerParam('project_id');
-        $task_id = $this->request->getIntegerParam('task_id');
-
-        // Allow urls without "project_id"
-        if ($task_id > 0 && $project_id === 0) {
-            $project_id = $this->taskFinder->getProjectId($task_id);
-        }
-
-        if (! $this->acl->isAllowed($controller, $action, $project_id)) {
-            $this->forbidden();
-        }
-    }
-
-    /**
      * Application not found page (404 error)
      *
-     * @access public
+     * @access protected
      * @param  boolean   $no_layout   Display the layout or not
      */
-    public function notfound($no_layout = false)
+    protected function notfound($no_layout = false)
     {
         $this->response->html($this->template->layout('app/notfound', array(
             'title' => t('Page not found'),
@@ -161,10 +175,10 @@ abstract class Base extends \Kanboard\Core\Base
     /**
      * Application forbidden page
      *
-     * @access public
+     * @access protected
      * @param  boolean   $no_layout   Display the layout or not
      */
-    public function forbidden($no_layout = false)
+    protected function forbidden($no_layout = false)
     {
         $this->response->html($this->template->layout('app/forbidden', array(
             'title' => t('Access Forbidden'),

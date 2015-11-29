@@ -11,6 +11,14 @@ namespace Kanboard\Core\Ldap;
 class Query
 {
     /**
+     * LDAP client
+     *
+     * @access private
+     * @var Client
+     */
+    private $client = null;
+
+    /**
      * Query result
      *
      * @access private
@@ -22,10 +30,12 @@ class Query
      * Constructor
      *
      * @access public
+     * @param  Client $client
      * @param  array  $entries
      */
-    public function __construct(array $entries = array())
+    public function __construct(Client $client, array $entries = array())
     {
+        $this->client = $client;
         $this->entries = $entries;
     }
 
@@ -33,20 +43,19 @@ class Query
      * Execute query
      *
      * @access public
-     * @param  resource  $ldap
      * @param  string    $baseDn
      * @param  string    $filter
      * @param  array     $attributes
      * @return Query
      */
-    public function execute($ldap, $baseDn, $filter, array $attributes)
+    public function execute($baseDn, $filter, array $attributes)
     {
-        $sr = ldap_search($ldap, $baseDn, $filter, $attributes);
+        $sr = ldap_search($this->client->getConnection(), $baseDn, $filter, $attributes);
         if ($sr === false) {
             return $this;
         }
 
-        $entries = ldap_get_entries($ldap, $sr);
+        $entries = ldap_get_entries($this->client->getConnection(), $sr);
         if ($entries === false || count($entries) === 0 || $entries['count'] == 0) {
             return $this;
         }

@@ -1,11 +1,13 @@
 <?php
 
-namespace Kanboard\Core;
+namespace Kanboard\Core\Http;
+
+use Kanboard\Core\Base;
 
 /**
- * OAuth2 client
+ * OAuth2 Client
  *
- * @package  core
+ * @package  http
  * @author   Frederic Guillot
  */
 class OAuth2 extends Base

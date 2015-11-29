@@ -5,29 +5,39 @@ namespace Kanboard\Core;
 use Pimple\Container;
 
 /**
- * Base class
+ * Base Class
  *
  * @package core
  * @author  Frederic Guillot
  *
- * @property \Kanboard\Core\Session\SessionManager                      $sessionManager
- * @property \Kanboard\Core\Session\SessionStorage                      $sessionStorage
- * @property \Kanboard\Core\Session\FlashMessage                        $flash
- * @property \Kanboard\Core\Helper                                      $helper
- * @property \Kanboard\Core\Mail\Client                                 $emailClient
- * @property \Kanboard\Core\Paginator                                   $paginator
+ * @property \Kanboard\Core\Cache\MemoryCache                           $memoryCache
  * @property \Kanboard\Core\Http\Client                                 $httpClient
+ * @property \Kanboard\Core\Http\OAuth2                                 $oauth
+ * @property \Kanboard\Core\Http\RememberMeCookie                       $rememberMeCookie
  * @property \Kanboard\Core\Http\Request                                $request
- * @property \Kanboard\Core\Http\Router                                 $router
  * @property \Kanboard\Core\Http\Response                               $response
- * @property \Kanboard\Core\Template                                    $template
- * @property \Kanboard\Core\OAuth2                                      $oauth
- * @property \Kanboard\Core\Lexer                                       $lexer
+ * @property \Kanboard\Core\Http\Router                                 $router
+ * @property \Kanboard\Core\Mail\Client                                 $emailClient
  * @property \Kanboard\Core\ObjectStorage\ObjectStorageInterface        $objectStorage
- * @property \Kanboard\Core\Cache\Cache                                 $memoryCache
  * @property \Kanboard\Core\Plugin\Hook                                 $hook
  * @property \Kanboard\Core\Plugin\Loader                               $pluginLoader
+ * @property \Kanboard\Core\Security\AccessMap                          $projectAccessMap
+ * @property \Kanboard\Core\Security\AuthenticationManager              $authenticationManager
+ * @property \Kanboard\Core\Security\AccessMap                          $applicationAccessMap
+ * @property \Kanboard\Core\Security\AccessMap                          $projectAccessMap
+ * @property \Kanboard\Core\Security\Authorization                      $applicationAuthorization
+ * @property \Kanboard\Core\Security\Authorization                      $projectAuthorization
  * @property \Kanboard\Core\Security\Token                              $token
+ * @property \Kanboard\Core\Session\FlashMessage                        $flash
+ * @property \Kanboard\Core\Session\SessionManager                      $sessionManager
+ * @property \Kanboard\Core\Session\SessionStorage                      $sessionStorage
+ * @property \Kanboard\Core\User\UserProfile                            $userProfile
+ * @property \Kanboard\Core\User\UserSession                            $userSession
+ * @property \Kanboard\Core\DateParser                                  $dateParser
+ * @property \Kanboard\Core\Helper                                      $helper
+ * @property \Kanboard\Core\Lexer                                       $lexer
+ * @property \Kanboard\Core\Paginator                                   $paginator
+ * @property \Kanboard\Core\Template                                    $template
  * @property \Kanboard\Integration\BitbucketWebhook                     $bitbucketWebhook
  * @property \Kanboard\Integration\GithubWebhook                        $githubWebhook
  * @property \Kanboard\Integration\GitlabWebhook                        $gitlabWebhook
@@ -36,9 +46,7 @@ use Pimple\Container;
  * @property \Kanboard\Formatter\TaskFilterAutoCompleteFormatter        $taskFilterAutoCompleteFormatter
  * @property \Kanboard\Formatter\TaskFilterCalendarFormatter            $taskFilterCalendarFormatter
  * @property \Kanboard\Formatter\TaskFilterICalendarFormatter           $taskFilterICalendarFormatter
- * @property \Kanboard\Model\Acl                                        $acl
  * @property \Kanboard\Model\Action                                     $action
- * @property \Kanboard\Model\Authentication                             $authentication
  * @property \Kanboard\Model\Board                                      $board
  * @property \Kanboard\Model\Category                                   $category
  * @property \Kanboard\Model\Color                                      $color
@@ -46,7 +54,6 @@ use Pimple\Container;
  * @property \Kanboard\Model\Config                                     $config
  * @property \Kanboard\Model\Currency                                   $currency
  * @property \Kanboard\Model\CustomFilter                               $customFilter
- * @property \Kanboard\Model\DateParser                                 $dateParser
  * @property \Kanboard\Model\File                                       $file
  * @property \Kanboard\Model\LastLogin                                  $lastLogin
  * @property \Kanboard\Model\Link                                       $link
@@ -88,12 +95,12 @@ use Pimple\Container;
  * @property \Kanboard\Model\UserNotificationType                       $userNotificationType
  * @property \Kanboard\Model\UserNotificationFilter                     $userNotificationFilter
  * @property \Kanboard\Model\UserUnreadNotification                     $userUnreadNotification
- * @property \Kanboard\Model\UserSession                                $userSession
  * @property \Kanboard\Model\UserMetadata                               $userMetadata
  * @property \Kanboard\Model\Webhook                                    $webhook
  * @property \Psr\Log\LoggerInterface                                   $logger
  * @property \League\HTMLToMarkdown\HtmlConverter                       $htmlConverter
  * @property \PicoDb\Database                                           $db
+ * @property \Symfony\Component\EventDispatcher\EventDispatcher         $dispatcher
  */
 abstract class Base
 {

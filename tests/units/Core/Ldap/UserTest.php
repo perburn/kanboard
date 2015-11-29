@@ -42,9 +42,21 @@ class UserTest extends \Base
             'is_ldap_user' => 1,
         );
 
+        $client = $this
+            ->getMockBuilder('\Kanboard\Core\Ldap\Client')
+            ->setMethods(array(
+                'getConnection',
+            ))
+            ->getMock();
+
+        $client
+            ->expects($this->any())
+            ->method('getConnection')
+            ->will($this->returnValue('my_ldap_resource'));
+
         $query = $this
             ->getMockBuilder('\Kanboard\Core\Ldap\Query')
-            ->setConstructorArgs(array($entries))
+            ->setConstructorArgs(array($client, $entries))
             ->setMethods(array(
                 'execute',
                 'hasResult',
@@ -55,7 +67,6 @@ class UserTest extends \Base
             ->expects($this->once())
             ->method('execute')
             ->with(
-                $this->equalTo('my_ldap_resource'),
                 $this->equalTo('ou=People,dc=kanboard,dc=local'),
                 $this->equalTo('(uid=my_user)')
             );
@@ -90,6 +101,6 @@ class UserTest extends \Base
             ->method('getAttributeEmail')
             ->will($this->returnValue('mail'));
 
-        $this->assertEquals($expected, $user->getProfile('my_ldap_resource', 'ou=People,dc=kanboard,dc=local', '(uid=my_user)'));
+        $this->assertEquals($expected, $user->find('ou=People,dc=kanboard,dc=local', '(uid=my_user)'));
     }
 }

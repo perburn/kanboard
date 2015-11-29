@@ -18,6 +18,7 @@ namespace Kanboard\Core\Session;
  * @property string $captcha
  * @property string $commentSorting
  * @property bool   $hasSubtaskInProgress
+ * @property bool   $hasRememberMe
  * @property bool   $boardCollapsed
  */
 class SessionStorage
