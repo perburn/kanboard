@@ -140,10 +140,11 @@ class RememberMeSession extends Base
     {
         $sequence = Token::getToken();
 
-        $this->db
-             ->table(self::TABLE)
-             ->eq('token', $token)
-             ->update(array('sequence' => $sequence));
+        $this
+            ->db
+            ->table(self::TABLE)
+            ->eq('token', $token)
+            ->update(array('sequence' => $sequence));
 
         return $sequence;
     }
