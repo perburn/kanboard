@@ -7,6 +7,7 @@ use Kanboard\Core\Base;
 use Kanboard\Core\Security\AuthenticationManager;
 use Kanboard\Core\Session\SessionManager;
 use Kanboard\Event\AuthSuccessEvent;
+use Kanboard\Event\AuthFailureEvent;
 
 /**
  * Authentication Subscriber
@@ -27,6 +28,7 @@ class AuthSubscriber extends Base implements EventSubscriberInterface
     {
         return array(
             AuthenticationManager::EVENT_SUCCESS => 'afterLogin',
+            AuthenticationManager::EVENT_FAILURE => 'onLoginFailure',
             SessionManager::EVENT_DESTROY => 'afterLogout',
         );
     }
@@ -41,6 +43,8 @@ class AuthSubscriber extends Base implements EventSubscriberInterface
     {
         $userAgent = $this->request->getUserAgent();
         $ipAddress = $this->request->getIpAddress();
+
+        $this->userLocking->resetFailedLogin($this->userSession->getUsername());
 
         $this->lastLogin->create(
             $event->getAuthType(),
@@ -74,6 +78,24 @@ class AuthSubscriber extends Base implements EventSubscriberInterface
             }
 
             $this->rememberMeCookie->remove();
+        }
+    }
+
+    /**
+     * Increment failed login counter
+     *
+     * @access public
+     */
+    public function onLoginFailure(AuthFailureEvent $event)
+    {
+        $username = $event->getUsername();
+
+        if (! empty($username)) {
+            $this->userLocking->incrementFailedLogin($username);
+
+            if ($this->userLocking->getFailedLogin($username) > BRUTEFORCE_LOCKDOWN) {
+                $this->userLocking->lock($username, BRUTEFORCE_LOCKDOWN_DURATION);
+            }
         }
     }
 }

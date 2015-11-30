@@ -99,7 +99,7 @@ class AuthenticationManager extends Base
             }
         }
 
-        $this->dispatcher->dispatch(self::EVENT_FAILURE, new AuthFailureEvent);
+        $this->dispatcher->dispatch(self::EVENT_FAILURE, new AuthFailureEvent($username));
 
         return false;
     }

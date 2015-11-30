@@ -113,5 +113,6 @@ class AuthenticationManagerTest extends Base
     public function onFailure($event)
     {
         $this->assertInstanceOf('Kanboard\Event\AuthFailureEvent', $event);
+        $this->assertEquals('admin', $event->getUsername());
     }
 }
