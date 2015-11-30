@@ -126,6 +126,23 @@ class AuthenticationManager extends Base
     }
 
     /**
+     * Get the last Post-Authentication provider
+     *
+     * @access public
+     * @return PostAuthenticationProviderInterface
+     */
+    public function getPostAuthenticationProvider()
+    {
+        $providers = $this->filterProviders('PostAuthenticationProviderInterface');
+
+        if (empty($providers)) {
+            throw new LogicException('You must have at least one Post-Authentication Provider configured');
+        }
+
+        return array_pop($providers);
+    }
+
+    /**
      * Filter registered providers by interface type
      *
      * @access private

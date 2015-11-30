@@ -11,6 +11,14 @@ namespace Kanboard\Core\Security;
 interface OAuthAuthenticationProviderInterface extends AuthenticationProviderInterface
 {
     /**
+     * Get user object
+     *
+     * @access public
+     * @return UserProviderInterface
+     */
+    public function getUser();
+
+    /**
      * Get configured OAuth2 service
      *
      * @access public

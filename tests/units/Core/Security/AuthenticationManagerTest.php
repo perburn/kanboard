@@ -2,8 +2,11 @@
 
 require_once __DIR__.'/../../Base.php';
 
+use Kanboard\Core\Http\Request;
 use Kanboard\Core\Security\AuthenticationManager;
 use Kanboard\Auth\DatabaseAuth;
+use Kanboard\Auth\TotpAuth;
+use Kanboard\Auth\ReverseProxyAuth;
 
 class AuthenticationManagerTest extends Base
 {
@@ -21,6 +24,54 @@ class AuthenticationManagerTest extends Base
         $authManager = new AuthenticationManager($this->container);
         $this->setExpectedException('LogicException');
         $authManager->getProvider('Dababase');
+    }
+
+    public function testGetPostProviderNotFound()
+    {
+        $authManager = new AuthenticationManager($this->container);
+        $this->setExpectedException('LogicException');
+        $authManager->getPostAuthenticationProvider();
+    }
+
+    public function testGetPostProvider()
+    {
+        $authManager = new AuthenticationManager($this->container);
+        $authManager->register(new TotpAuth($this->container));
+        $provider = $authManager->getPostAuthenticationProvider();
+
+        $this->assertInstanceOf('Kanboard\Core\Security\PostAuthenticationProviderInterface', $provider);
+    }
+
+    public function testPreAuthenticationSuccessful()
+    {
+        $this->container['request'] = new Request($this->container, array(REVERSE_PROXY_USER_HEADER => 'admin'));
+        $this->container['dispatcher']->addListener(AuthenticationManager::EVENT_SUCCESS, array($this, 'onSuccess'));
+        $this->container['dispatcher']->addListener(AuthenticationManager::EVENT_FAILURE, array($this, 'onFailure'));
+
+        $authManager = new AuthenticationManager($this->container);
+        $authManager->register(new ReverseProxyAuth($this->container));
+
+        $this->assertTrue($authManager->preAuthentication());
+
+        $called = $this->container['dispatcher']->getCalledListeners();
+        $this->assertArrayHasKey(AuthenticationManager::EVENT_SUCCESS.'.AuthenticationManagerTest::onSuccess', $called);
+        $this->assertArrayNotHasKey(AuthenticationManager::EVENT_FAILURE.'.AuthenticationManagerTest::onFailure', $called);
+    }
+
+    public function testPreAuthenticationFailed()
+    {
+        $this->container['request'] = new Request($this->container, array(REVERSE_PROXY_USER_HEADER => ''));
+        $this->container['dispatcher']->addListener(AuthenticationManager::EVENT_SUCCESS, array($this, 'onSuccess'));
+        $this->container['dispatcher']->addListener(AuthenticationManager::EVENT_FAILURE, array($this, 'onFailure'));
+
+        $authManager = new AuthenticationManager($this->container);
+        $authManager->register(new ReverseProxyAuth($this->container));
+
+        $this->assertFalse($authManager->preAuthentication());
+
+        $called = $this->container['dispatcher']->getCalledListeners();
+        $this->assertArrayNotHasKey(AuthenticationManager::EVENT_SUCCESS.'.AuthenticationManagerTest::onSuccess', $called);
+        $this->assertArrayNotHasKey(AuthenticationManager::EVENT_FAILURE.'.AuthenticationManagerTest::onFailure', $called);
     }
 
     public function testPasswordAuthenticationSuccessful()
@@ -56,7 +107,7 @@ class AuthenticationManagerTest extends Base
     public function onSuccess($event)
     {
         $this->assertInstanceOf('Kanboard\Event\AuthSuccessEvent', $event);
-        $this->assertEquals('Database', $event->getAuthType());
+        $this->assertTrue(in_array($event->getAuthType(), array('Database', 'ReverseProxy')));
     }
 
     public function onFailure($event)

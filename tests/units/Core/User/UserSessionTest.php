@@ -131,28 +131,27 @@ class UserSessionTest extends Base
         $this->assertEquals('assignee:bob', $us->getFilters(2));
     }
 
-    public function test2FA()
+    public function testPostAuthentication()
     {
         $us = new UserSession($this->container);
+        $this->assertFalse($us->isPostAuthenticationValidated());
 
-        $this->assertFalse($us->check2FA());
+        $this->container['sessionStorage']->postAuthenticationValidated = false;
+        $this->assertFalse($us->isPostAuthenticationValidated());
 
-        $this->container['sessionStorage']->postAuth = array('validated' => false);
-        $this->assertFalse($us->check2FA());
-
-        $this->container['sessionStorage']->postAuth = array('validated' => true);
-        $this->assertTrue($us->check2FA());
+        $us->validatePostAuthentication();
+        $this->assertTrue($us->isPostAuthenticationValidated());
 
         $this->container['sessionStorage']->user = array();
-        $this->assertFalse($us->has2FA());
+        $this->assertFalse($us->hasPostAuthentication());
 
         $this->container['sessionStorage']->user = array('twofactor_activated' => false);
-        $this->assertFalse($us->has2FA());
+        $this->assertFalse($us->hasPostAuthentication());
 
         $this->container['sessionStorage']->user = array('twofactor_activated' => true);
-        $this->assertTrue($us->has2FA());
+        $this->assertTrue($us->hasPostAuthentication());
 
-        $us->disable2FA();
-        $this->assertFalse($us->has2FA());
+        $us->disablePostAuthentication();
+        $this->assertFalse($us->hasPostAuthentication());
     }
 }

@@ -36,7 +36,7 @@ class UserSession extends Base
         $user['twofactor_activated'] = isset($user['twofactor_activated']) ? (bool) $user['twofactor_activated'] : false;
 
         $this->sessionStorage->user = $user;
-        $this->sessionStorage->postAuth = array('validated' => false);
+        $this->sessionStorage->postAuthenticationValidated = false;
     }
 
     /**
@@ -62,29 +62,42 @@ class UserSession extends Base
      * @access public
      * @return bool
      */
-    public function check2FA()
+    public function isPostAuthenticationValidated()
     {
-        return isset($this->sessionStorage->postAuth['validated']) && $this->sessionStorage->postAuth['validated'] === true;
+        return isset($this->sessionStorage->postAuthenticationValidated) && $this->sessionStorage->postAuthenticationValidated === true;
     }
+
+    /**
+     * Validate 2FA for the current session
+     *
+     * @access public
+     */
+    public function validatePostAuthentication()
+    {
+        $this->sessionStorage->postAuthenticationValidated = true;
+    }
+
     /**
      * Return true if the user has 2FA enabled
      *
      * @access public
      * @return bool
      */
-    public function has2FA()
+    public function hasPostAuthentication()
     {
         return isset($this->sessionStorage->user['twofactor_activated']) && $this->sessionStorage->user['twofactor_activated'] === true;
     }
+
     /**
      * Disable 2FA for the current session
      *
      * @access public
      */
-    public function disable2FA()
+    public function disablePostAuthentication()
     {
         $this->sessionStorage->user['twofactor_activated'] = false;
     }
+
     /**
      * Return true if the logged user is admin
      *
@@ -95,6 +108,7 @@ class UserSession extends Base
     {
         return isset($this->sessionStorage->user['is_admin']) && $this->sessionStorage->user['is_admin'] === true;
     }
+
     /**
      * Return true if the logged user is project admin
      *

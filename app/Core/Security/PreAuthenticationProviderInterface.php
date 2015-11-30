@@ -10,4 +10,11 @@ namespace Kanboard\Core\Security;
  */
 interface PreAuthenticationProviderInterface extends AuthenticationProviderInterface
 {
+    /**
+     * Get user object
+     *
+     * @access public
+     * @return UserProviderInterface
+     */
+    public function getUser();
 }

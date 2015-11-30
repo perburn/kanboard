@@ -55,11 +55,12 @@ abstract class Base extends \Kanboard\Core\Base
     public function beforeAction($controller, $action)
     {
         $this->sessionManager->open();
-        $this->sendHeaders($action);
         $this->dispatcher->dispatch('app.bootstrap');
+        $this->sendHeaders($action);
 
         if (! $this->applicationAuthorization->isAllowed($controller, $action, Role::APP_PUBLIC)) {
             $this->handleAuthentication();
+            $this->handlePostAuthentication($controller, $action);
             $this->checkApplicationAuthorization($controller, $action);
             $this->checkProjectAuthorization($controller, $action);
         }
@@ -105,6 +106,24 @@ abstract class Base extends \Kanboard\Core\Base
     }
 
     /**
+     * Handle Post-Authentication (2FA)
+     *
+     * @access private
+     */
+    private function handlePostAuthentication($controller, $action)
+    {
+        $ignore = ($controller === 'twofactor' && in_array($action, array('code', 'check'))) || ($controller === 'auth' && $action === 'logout');
+
+        if ($ignore === false && $this->userSession->hasPostAuthentication() && ! $this->userSession->isPostAuthenticationValidated()) {
+            if ($this->request->isAjax()) {
+                $this->response->text('Not Authorized', 401);
+            }
+
+            $this->response->redirect($this->helper->url->to('twofactor', 'code'));
+        }
+    }
+
+    /**
      * Check application authorization
      *
      * @access private
@@ -137,24 +156,6 @@ abstract class Base extends \Kanboard\Core\Base
             if (! $this->projectAuthorization->isAllowed($controller, $action, $role)) {
                 $this->forbidden();
             }
-        }
-    }
-
-    /**
-     * Check 2FA
-     *
-     * @access private
-     */
-    private function handle2FA($controller, $action)
-    {
-        $ignore = ($controller === 'twofactor' && in_array($action, array('code', 'check'))) || ($controller === 'auth' && $action === 'logout');
-
-        if ($ignore === false && $this->userSession->has2FA() && ! $this->userSession->check2FA()) {
-            if ($this->request->isAjax()) {
-                $this->response->text('Not Authorized', 401);
-            }
-
-            $this->response->redirect($this->helper->url->to('twofactor', 'code'));
         }
     }
 

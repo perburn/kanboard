@@ -11,6 +11,14 @@ namespace Kanboard\Core\Security;
 interface PasswordAuthenticationProviderInterface extends AuthenticationProviderInterface
 {
     /**
+     * Get user object
+     *
+     * @access public
+     * @return UserProviderInterface
+     */
+    public function getUser();
+
+    /**
      * Set username
      *
      * @access public

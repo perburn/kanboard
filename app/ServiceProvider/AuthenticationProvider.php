@@ -14,6 +14,7 @@ use Kanboard\Auth\LdapAuth;
 use Kanboard\Auth\GitlabAuth;
 use Kanboard\Auth\GithubAuth;
 use Kanboard\Auth\GoogleAuth;
+use Kanboard\Auth\TotpAuth;
 
 /**
  * Authentication Provider
@@ -33,6 +34,7 @@ class AuthenticationProvider implements ServiceProviderInterface
     public function register(Container $container)
     {
         $container['authenticationManager'] = new AuthenticationManager($container);
+        $container['authenticationManager']->register(new TotpAuth($container));
         $container['authenticationManager']->register(new RememberMeAuth($container));
 
         if (LDAP_AUTH) {

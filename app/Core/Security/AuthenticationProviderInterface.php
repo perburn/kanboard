@@ -25,12 +25,4 @@ interface AuthenticationProviderInterface
      * @return boolean
      */
     public function authenticate();
-
-    /**
-     * Get user object
-     *
-     * @access public
-     * @return UserProviderInterface
-     */
-    public function getUser();
 }
