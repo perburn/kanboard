@@ -87,4 +87,17 @@ class UserLocking extends Base
                 'lock_expiration_date' => time() + $duration * 60
             ));
     }
+
+     /**
+     * Return true if the captcha must be shown
+     *
+     * @access public
+     * @param  string  $username
+     * @param  integer $tries
+     * @return boolean
+     */
+    public function hasCaptcha($username, $tries = BRUTEFORCE_CAPTCHA)
+    {
+        return $this->getFailedLogin($username) >= $tries;
+    }
 }

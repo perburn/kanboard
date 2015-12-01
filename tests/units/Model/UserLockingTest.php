@@ -30,4 +30,14 @@ class UserLockingTest extends Base
         $this->assertTrue($u->lock('admin', 1));
         $this->assertTrue($u->isLocked('admin'));
     }
+
+    public function testCaptcha()
+    {
+        $u = new UserLocking($this->container);
+        $this->assertTrue($u->incrementFailedLogin('admin'));
+        $this->assertFalse($u->hasCaptcha('admin', 2));
+
+        $this->assertTrue($u->incrementFailedLogin('admin'));
+        $this->assertTrue($u->hasCaptcha('admin', 2));
+    }
 }

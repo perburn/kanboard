@@ -24,8 +24,7 @@ class Auth extends Base
         }
 
         $this->response->html($this->template->layout('auth/index', array(
-            // TODO: fix captcha
-            // 'captcha' => isset($values['username']) && $this->authentication->hasCaptcha($values['username']),
+            'captcha' => ! empty($values['username']) && $this->userLocking->hasCaptcha($values['username']),
             'errors' => $errors,
             'values' => $values,
             'no_layout' => true,

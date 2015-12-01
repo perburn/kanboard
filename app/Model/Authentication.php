@@ -23,12 +23,11 @@ class Authentication extends Base
      */
     public function validateForm(array $values)
     {
-        list($result, $errors) = $this->validateFormCredentials($values);
+        foreach (array('validateFields', 'validateLocking', 'validateCaptcha', 'validateCredentials') as $method) {
+            list($result, $errors) = $this->$method($values);
 
-        if ($result) {
-            if (! $this->authenticationManager->passwordAuthentication($values['username'], $values['password'])) {
-                $result = false;
-                $errors['login'] = t('Bad username or password');
+            if (! $result) {
+                break;
             }
         }
 
@@ -38,11 +37,11 @@ class Authentication extends Base
     /**
      * Validate credentials syntax
      *
-     * @access public
+     * @access private
      * @param  array   $values           Form values
      * @return array   $valid, $errors   [0] = Success or not, [1] = List of errors
      */
-    public function validateFormCredentials(array $values)
+    private function validateFields(array $values)
     {
         $v = new Validator($values, array(
             new Validators\Required('username', t('The username is required')),
@@ -57,24 +56,72 @@ class Authentication extends Base
     }
 
     /**
+     * Validate user locking
+     *
+     * @access private
+     * @param  array   $values           Form values
+     * @return array   $valid, $errors   [0] = Success or not, [1] = List of errors
+     */
+    private function validateLocking(array $values)
+    {
+        $result = true;
+        $errors = array();
+
+        if ($this->userLocking->isLocked($values['username'])) {
+            $result = false;
+            $errors['login'] = t('Your account is locked for %d minutes', BRUTEFORCE_LOCKDOWN_DURATION);
+            $this->logger->error('Account locked: '.$values['username']);
+        }
+
+        return array($result, $errors);
+    }
+
+    /**
+     * Validate password syntax
+     *
+     * @access private
+     * @param  array   $values           Form values
+     * @return array   $valid, $errors   [0] = Success or not, [1] = List of errors
+     */
+    private function validateCredentials(array $values)
+    {
+        $result = true;
+        $errors = array();
+
+        if (! $this->authenticationManager->passwordAuthentication($values['username'], $values['password'])) {
+            $result = false;
+            $errors['login'] = t('Bad username or password');
+        }
+
+        return array($result, $errors);
+    }
+
+    /**
      * Validate captcha
      *
-     * @access public
+     * @access private
      * @param  array   $values           Form values
      * @return boolean
      */
-    public function validateFormCaptcha(array $values)
+    private function validateCaptcha(array $values)
     {
-        if ($this->hasCaptcha($values['username'])) {
-            if (! isset($this->sessionStorage->captcha)) {
-                return false;
-            }
+        $result = true;
+        $errors = array();
 
-            $builder = new CaptchaBuilder;
-            $builder->setPhrase($this->sessionStorage->captcha);
-            return $builder->testPhrase(isset($values['captcha']) ? $values['captcha'] : '');
+        if ($this->userLocking->hasCaptcha($values['username'])) {
+            if (! isset($this->sessionStorage->captcha)) {
+                $result = false;
+            } else {
+                $builder = new CaptchaBuilder;
+                $builder->setPhrase($this->sessionStorage->captcha);
+                $result = $builder->testPhrase(isset($values['captcha']) ? $values['captcha'] : '');
+
+                if (! $result) {
+                    $errors['login'] = t('Invalid captcha');
+                }
+            }
         }
 
-        return true;
+        return array($result, $errors);;
     }
 }
