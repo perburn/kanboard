@@ -12,7 +12,7 @@ namespace Kanboard\Core\Session;
  * @property array  $user
  * @property array  $flash
  * @property array  $csrf
- * @property array  $postAuth
+ * @property array  $postAuthenticationValidated
  * @property array  $filters
  * @property string $redirectAfterLogin
  * @property string $captcha

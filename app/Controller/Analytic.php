@@ -132,6 +132,9 @@ class Analytic extends Base
      * Common method for CFD and Burdown chart
      *
      * @access private
+     * @param string $template
+     * @param string $column
+     * @param string $title
      */
     private function commonAggregateMetrics($template, $column, $title)
     {

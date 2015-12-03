@@ -246,9 +246,9 @@ class ProjectUserRole extends Base
 
         foreach ($rows as $row) {
             $result = $this->db->table(self::TABLE)->save(array(
-               'project_id' => $project_dst_id,
-               'user_id' => $row['user_id'],
-               'role' => $row['role'],
+                'project_id' => $project_dst_id,
+                'user_id' => $row['user_id'],
+                'role' => $row['role'],
             ));
 
             if (! $result) {

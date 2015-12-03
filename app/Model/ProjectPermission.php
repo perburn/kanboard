@@ -107,7 +107,7 @@ class ProjectPermission extends Base
      * Copy permissions to another project
      *
      * @param  integer  $project_src_id  Project Template
-     * @return integer  $project_dst_id  Project that receives the copy
+     * @param  integer  $project_dst_id  Project that receives the copy
      * @return boolean
      */
     public function duplicate($project_src_id, $project_dst_id)

@@ -324,10 +324,10 @@ class User extends Base
 
             // All private projects are removed
             $project_ids = $db->table(Project::TABLE)
-                           ->eq('is_private', 1)
-                           ->eq(ProjectUserRole::TABLE.'.user_id', $user_id)
-                           ->join(ProjectUserRole::TABLE, 'project_id', 'id')
-                           ->findAllByColumn(Project::TABLE.'.id');
+                ->eq('is_private', 1)
+                ->eq(ProjectUserRole::TABLE.'.user_id', $user_id)
+                ->join(ProjectUserRole::TABLE, 'project_id', 'id')
+                ->findAllByColumn(Project::TABLE.'.id');
 
             if (! empty($project_ids)) {
                 $db->table(Project::TABLE)->in('id', $project_ids)->remove();

@@ -4,6 +4,7 @@ namespace Schema;
 
 use PDO;
 use Kanboard\Core\Security\Token;
+use Kanboard\Core\Security\Role;
 
 const VERSION = 76;
 

@@ -355,6 +355,7 @@ class Board extends Base
      * Change display mode
      *
      * @access private
+     * @param  boolean $mode
      */
     private function changeDisplayMode($mode)
     {
@@ -372,6 +373,7 @@ class Board extends Base
      * Render board
      *
      * @access private
+     * @param  integer $project_id
      */
     private function renderBoard($project_id)
     {

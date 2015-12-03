@@ -88,7 +88,7 @@ class UserLocking extends Base
             ));
     }
 
-     /**
+    /**
      * Return true if the captcha must be shown
      *
      * @access public

@@ -23,6 +23,9 @@ class Authentication extends Base
      */
     public function validateForm(array $values)
     {
+        $result = false;
+        $errors = array();
+
         foreach (array('validateFields', 'validateLocking', 'validateCaptcha', 'validateCredentials') as $method) {
             list($result, $errors) = $this->$method($values);
 
