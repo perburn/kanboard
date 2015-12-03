@@ -88,13 +88,18 @@ class AuthenticationProvider implements ServiceProviderInterface
         $acl->add('Export', '*', Role::PROJECT_MANAGER);
         $acl->add('File', array('screenshot', 'create', 'save', 'remove', 'confirm'), Role::PROJECT_MEMBER);
         $acl->add('Gantt', '*', Role::PROJECT_MANAGER);
-        $acl->add('Project', array('share', 'integrations', 'notifications', 'edit', 'update', 'users', 'allowEverybody', 'allow', 'role', 'revoke', 'duplicate', 'disable', 'enable'), Role::PROJECT_MANAGER);
-        $acl->add('Projectinfo', '*', Role::PROJECT_MANAGER);
+        $acl->add('Project', array('share', 'integrations', 'notifications', 'edit', 'update', 'duplicate', 'disable', 'enable'), Role::PROJECT_MANAGER);
+        $acl->add('ProjectPermission', '*', Role::PROJECT_MANAGER);
+        $acl->add('Projectuser', '*', Role::PROJECT_MANAGER);
         $acl->add('Subtask', '*', Role::PROJECT_MEMBER);
         $acl->add('Swimlane', '*', Role::PROJECT_MANAGER);
         $acl->add('Task', 'remove', Role::PROJECT_MEMBER);
         $acl->add('Taskcreation', '*', Role::PROJECT_MEMBER);
+        $acl->add('Taskduplication', '*', Role::PROJECT_MEMBER);
+        $acl->add('TaskImport', '*', Role::PROJECT_MANAGER);
+        $acl->add('Tasklink', '*', Role::PROJECT_MEMBER);
         $acl->add('Taskmodification', '*', Role::PROJECT_MEMBER);
+        $acl->add('Taskstatus', '*', Role::PROJECT_MEMBER);
         $acl->add('Timer', '*', Role::PROJECT_MEMBER);
 
         return $acl;
@@ -128,6 +133,7 @@ class AuthenticationProvider implements ServiceProviderInterface
         $acl->add('Group', '*', Role::APP_ADMIN);
         $acl->add('Link', '*', Role::APP_ADMIN);
         $acl->add('Project', array('users', 'allowEverybody', 'allow', 'role', 'revoke', 'remove'), Role::APP_MANAGER);
+        $acl->add('ProjectPermission', '*', Role::APP_MANAGER);
         $acl->add('Projectuser', '*', Role::APP_MANAGER);
         $acl->add('Twofactor', 'disable', Role::APP_ADMIN);
         $acl->add('UserImport', '*', Role::APP_ADMIN);

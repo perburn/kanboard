@@ -66,21 +66,13 @@
                 </td>
                 <?php if ($this->user->isAdmin() || $this->user->isManager()): ?>
                 <td>
-                    <ul class="no-bullet">
-                    <?php foreach ($project['managers'] as $user_id => $user_name): ?>
-                        <li><?= $this->url->link($this->e($user_name), 'projectuser', 'opens', array('user_id' => $user_id)) ?></li>
-                    <?php endforeach ?>
-                    </ul>
+                    <?= $this->render('project/roles', array('roles' => $project, 'role' => \Kanboard\Core\Security\Role::PROJECT_MANAGER)) ?>
                 </td>
                 <td>
                     <?php if ($project['is_everybody_allowed'] == 1): ?>
                         <?= t('Everybody') ?>
                     <?php else: ?>
-                        <ul class="no-bullet">
-                        <?php foreach ($project['members'] as $user_id => $user_name): ?>
-                            <li><?= $this->url->link($this->e($user_name), 'projectuser', 'opens', array('user_id' => $user_id)) ?></li>
-                        <?php endforeach ?>
-                        </ul>
+                        <?= $this->render('project/roles', array('roles' => $project, 'role' => \Kanboard\Core\Security\Role::PROJECT_MEMBER)) ?>
                     <?php endif ?>
                 </td>
                 <?php endif ?>

@@ -83,6 +83,8 @@ class ProjectUserRole extends Base
             ->columns(User::TABLE.'.id', User::TABLE.'.username', User::TABLE.'.name', self::TABLE.'.role')
             ->join(User::TABLE, 'id', 'user_id')
             ->eq('project_id', $project_id)
+            ->asc(User::TABLE.'.username')
+            ->asc(User::TABLE.'.name')
             ->findAll();
     }
 

@@ -27,6 +27,7 @@ use Pimple\Container;
  * @property \Kanboard\Core\Security\AccessMap                          $projectAccessMap
  * @property \Kanboard\Core\Security\Authorization                      $applicationAuthorization
  * @property \Kanboard\Core\Security\Authorization                      $projectAuthorization
+ * @property \Kanboard\Core\Security\Role                               $role
  * @property \Kanboard\Core\Security\Token                              $token
  * @property \Kanboard\Core\Session\FlashMessage                        $flash
  * @property \Kanboard\Core\Session\SessionManager                      $sessionManager

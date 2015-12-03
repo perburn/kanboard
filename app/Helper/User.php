@@ -67,6 +67,7 @@ class User extends \Kanboard\Core\Base
             array('user_id' => $this->userSession->getId())
         );
     }
+
     /**
      * Check if the given user_id is the connected user
      *
@@ -98,6 +99,18 @@ class User extends \Kanboard\Core\Base
     public function isManager()
     {
         return $this->userSession->getRole() === Role::APP_MANAGER;
+    }
+
+    /**
+     * Get role name
+     *
+     * @access public
+     * @param  string  $role
+     * @return string
+     */
+    public function getRoleName($role = '')
+    {
+        return $this->role->getRoleName($role ?: $this->userSession->getRole());
     }
 
     /**

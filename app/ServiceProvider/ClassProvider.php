@@ -101,6 +101,7 @@ class ClassProvider implements ServiceProviderInterface
         ),
         'Core\Security' => array(
             'Token',
+            'Role',
         ),
         'Core\User' => array(
             'UserSession',

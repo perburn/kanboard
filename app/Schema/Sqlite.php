@@ -31,7 +31,7 @@ function version_90(PDO $pdo)
 
     foreach ($rows as $row) {
         $rq->execute(array(
-            $row['is_owner'] == 1 ? Role::PROJECT_MANAGER : ROLE::PROJECT_MEMBER,
+            $row['is_owner'] == 1 ? Role::PROJECT_MANAGER : Role::PROJECT_MEMBER,
             $row['id'],
         ));
     }

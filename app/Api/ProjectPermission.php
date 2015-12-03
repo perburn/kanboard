@@ -2,6 +2,8 @@
 
 namespace Kanboard\Api;
 
+use Kanboard\Core\Security\Role;
+
 /**
  * ProjectPermission API controller
  *
@@ -22,6 +24,6 @@ class ProjectPermission extends \Kanboard\Core\Base
 
     public function allowUser($project_id, $user_id)
     {
-        return $this->projectUserRole->addUser($project_id, $user_id);
+        return $this->projectUserRole->addUser($project_id, $user_id, Role::PROJECT_MEMBER);
     }
 }

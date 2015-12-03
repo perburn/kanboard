@@ -31,8 +31,8 @@
                 <?= $this->url->link(t('Categories'), 'category', 'index', array('project_id' => $project['id'])) ?>
             </li>
             <?php if ($this->user->isAdmin() || $project['is_private'] == 0): ?>
-            <li <?= $this->app->getRouterController() === 'project' && $this->app->getRouterAction() === 'users' ? 'class="active"' : '' ?>>
-                <?= $this->url->link(t('Users'), 'project', 'users', array('project_id' => $project['id'])) ?>
+            <li <?= $this->app->getRouterController() === 'project' && $this->app->getRouterAction() === 'permissions' ? 'class="active"' : '' ?>>
+                <?= $this->url->link(t('Permissions'), 'ProjectPermission', 'index', array('project_id' => $project['id'])) ?>
             </li>
             <?php endif ?>
             <li <?= $this->app->getRouterController() === 'action' ? 'class="active"' : '' ?>>
