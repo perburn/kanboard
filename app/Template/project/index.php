@@ -1,11 +1,11 @@
 <section id="main">
     <div class="page-header">
         <ul>
-            <?php if ($this->user->isProjectAdmin() || $this->user->isAdmin()): ?>
+            <?php if ($this->user->isManager() || $this->user->isAdmin()): ?>
                 <li><i class="fa fa-plus fa-fw"></i><?= $this->url->link(t('New project'), 'project', 'create') ?></li>
             <?php endif ?>
             <li><i class="fa fa-lock fa-fw"></i><?= $this->url->link(t('New private project'), 'project', 'create', array('private' => 1)) ?></li>
-            <?php if ($this->user->isProjectAdmin() || $this->user->isAdmin()): ?>
+            <?php if ($this->user->isManager() || $this->user->isAdmin()): ?>
                 <li><i class="fa fa-user fa-fw"></i><?= $this->url->link(t('Users overview'), 'projectuser', 'managers') ?></li>
                 <li><i class="fa fa-sliders fa-fw"></i><?= $this->url->link(t('Projects Gantt chart'), 'gantt', 'projects') ?></li>
             <?php endif ?>
@@ -21,7 +21,7 @@
                 <th class="column-15"><?= $paginator->order(t('Project'), 'name') ?></th>
                 <th class="column-8"><?= $paginator->order(t('Start date'), 'start_date') ?></th>
                 <th class="column-8"><?= $paginator->order(t('End date'), 'end_date') ?></th>
-                <?php if ($this->user->isAdmin() || $this->user->isProjectAdmin()): ?>
+                <?php if ($this->user->isAdmin() || $this->user->isManager()): ?>
                     <th class="column-12"><?= t('Managers') ?></th>
                     <th class="column-12"><?= t('Members') ?></th>
                 <?php endif ?>
@@ -64,7 +64,7 @@
                 <td>
                     <?= $project['end_date'] ?>
                 </td>
-                <?php if ($this->user->isAdmin() || $this->user->isProjectAdmin()): ?>
+                <?php if ($this->user->isAdmin() || $this->user->isManager()): ?>
                 <td>
                     <ul class="no-bullet">
                     <?php foreach ($project['managers'] as $user_id => $user_name): ?>

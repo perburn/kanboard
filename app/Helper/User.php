@@ -90,16 +90,14 @@ class User extends \Kanboard\Core\Base
     }
 
     /**
-     * Return if the logged user is project admin
+     * Return if the logged user is application manager
      *
      * @access public
      * @return boolean
      */
-    public function isProjectAdmin()
+    public function isManager()
     {
-        //TODO: fixme
-        return false;
-        //return $this->userSession->isProjectAdmin();
+        return $this->userSession->getRole() === Role::APP_MANAGER;
     }
 
     /**
@@ -113,9 +111,12 @@ class User extends \Kanboard\Core\Base
         if ($this->userSession->isAdmin()) {
             return true;
         }
-        //TODO: fixme
-        // return $this->userSession->getRole() === Role::APP_MANAGER &&
-            // in_array($this->memoryCache->proxy($this->projectPermission, 'getRole', $project_id, $this->userSession->getId()), array(Role::PROJECT_MANAGER, Role::PROJECT_MEMBER));
+
+        return $this->userSession->getRole() === Role::APP_MANAGER &&
+            in_array(
+                $this->memoryCache->proxy($this->projectUserRole, 'getUserRole', $project_id, $this->userSession->getId()),
+                array(Role::PROJECT_MANAGER, Role::PROJECT_MEMBER)
+            );
     }
 
     /**
@@ -130,8 +131,7 @@ class User extends \Kanboard\Core\Base
             return true;
         }
 
-        // TODO: fixme
-        return $this->memoryCache->proxy($this->projectPermission, 'getRole', $project_id, $this->userSession->getId()) === Role::PROJECT_MANAGER;
+        return $this->memoryCache->proxy($this->projectUserRole, 'getUserRole', $project_id, $this->userSession->getId()) === Role::PROJECT_MANAGER;
     }
 
     /**

@@ -20,7 +20,7 @@ class Project extends Base
         if ($this->userSession->isAdmin()) {
             $project_ids = $this->project->getAllIds();
         } else {
-            $project_ids = $this->projectPermission->getMemberProjectIds($this->userSession->getId());
+            $project_ids = $this->projectPermission->getActiveProjectIds($this->userSession->getId());
         }
 
         $nb_projects = count($project_ids);
@@ -33,7 +33,7 @@ class Project extends Base
             ->calculate();
 
         $this->response->html($this->template->layout('project/index', array(
-            'board_selector' => $this->projectPermission->getAllowedProjects($this->userSession->getId()),
+            'board_selector' => $this->projectUserRole->getProjectsByUser($this->userSession->getId()),
             'paginator' => $paginator,
             'nb_projects' => $nb_projects,
             'title' => t('Projects').' ('.$nb_projects.')'
@@ -194,7 +194,7 @@ class Project extends Base
 
         $this->response->html($this->projectLayout('project/users', array(
             'project' => $project,
-            'users' => $this->projectPermission->getAllUsers($project['id']),
+            'users' => $this->projectUserRole->getUsers($project['id']),
             'title' => t('Edit project access list')
         )));
     }
@@ -208,14 +208,11 @@ class Project extends Base
     {
         $project = $this->getProject();
         $values = $this->request->getValues() + array('is_everybody_allowed' => 0);
-        list($valid, ) = $this->projectPermission->validateProjectModification($values);
 
-        if ($valid) {
-            if ($this->project->update($values)) {
-                $this->flash->success(t('Project updated successfully.'));
-            } else {
-                $this->flash->failure(t('Unable to update this project.'));
-            }
+        if ($this->project->update($values)) {
+            $this->flash->success(t('Project updated successfully.'));
+        } else {
+            $this->flash->failure(t('Unable to update this project.'));
         }
 
         $this->response->redirect($this->helper->url->to('project', 'users', array('project_id' => $project['id'])));
@@ -229,14 +226,11 @@ class Project extends Base
     public function allow()
     {
         $values = $this->request->getValues();
-        list($valid, ) = $this->projectPermission->validateUserModification($values);
 
-        if ($valid) {
-            if ($this->projectPermission->addMember($values['project_id'], $values['user_id'])) {
-                $this->flash->success(t('Project updated successfully.'));
-            } else {
-                $this->flash->failure(t('Unable to update this project.'));
-            }
+        if ($this->projectUserRole->addUser($values['project_id'], $values['user_id'])) {
+            $this->flash->success(t('Project updated successfully.'));
+        } else {
+            $this->flash->failure(t('Unable to update this project.'));
         }
 
         $this->response->redirect($this->helper->url->to('project', 'users', array('project_id' => $values['project_id'])));
@@ -257,14 +251,10 @@ class Project extends Base
             'is_owner' => $this->request->getIntegerParam('is_owner'),
         );
 
-        list($valid, ) = $this->projectPermission->validateUserModification($values);
-
-        if ($valid) {
-            if ($this->projectPermission->changeRole($values['project_id'], $values['user_id'], $values['is_owner'])) {
-                $this->flash->success(t('Project updated successfully.'));
-            } else {
-                $this->flash->failure(t('Unable to update this project.'));
-            }
+        if ($this->projectUserRole->changeRole($values['project_id'], $values['user_id'], $values['role'])) {
+            $this->flash->success(t('Project updated successfully.'));
+        } else {
+            $this->flash->failure(t('Unable to update this project.'));
         }
 
         $this->response->redirect($this->helper->url->to('project', 'users', array('project_id' => $values['project_id'])));
@@ -284,14 +274,10 @@ class Project extends Base
             'user_id' => $this->request->getIntegerParam('user_id'),
         );
 
-        list($valid, ) = $this->projectPermission->validateUserModification($values);
-
-        if ($valid) {
-            if ($this->projectPermission->revokeMember($values['project_id'], $values['user_id'])) {
-                $this->flash->success(t('Project updated successfully.'));
-            } else {
-                $this->flash->failure(t('Unable to update this project.'));
-            }
+        if ($this->projectUserRole->removeUser($values['project_id'], $values['user_id'])) {
+            $this->flash->success(t('Project updated successfully.'));
+        } else {
+            $this->flash->failure(t('Unable to update this project.'));
         }
 
         $this->response->redirect($this->helper->url->to('project', 'users', array('project_id' => $values['project_id'])));
@@ -413,10 +399,10 @@ class Project extends Base
      */
     public function create(array $values = array(), array $errors = array())
     {
-        $is_private = $this->request->getIntegerParam('private', $this->userSession->isAdmin() || $this->userSession->isProjectAdmin() ? 0 : 1);
+        $is_private = $this->request->getIntegerParam('private', $this->userSession->isAdmin() || $this->helper->user->isManager() ? 0 : 1);
 
         $this->response->html($this->template->layout('project/new', array(
-            'board_selector' => $this->projectPermission->getAllowedProjects($this->userSession->getId()),
+            'board_selector' => $this->projectUserRole->getProjectsByUser($this->userSession->getId()),
             'values' => empty($values) ? array('is_private' => $is_private) : $values,
             'errors' => $errors,
             'is_private' => $is_private,

@@ -5,7 +5,39 @@ namespace Schema;
 use PDO;
 use Kanboard\Core\Security\Token;
 
-const VERSION = 75;
+const VERSION = 76;
+
+function version_76(PDO $pdo)
+{
+    $pdo->exec("
+        CREATE TABLE project_has_groups (
+            group_id INTEGER NOT NULL,
+            project_id INTEGER NOT NULL,
+            role VARCHAR(25) NOT NULL,
+            FOREIGN KEY(group_id) REFERENCES groups(id) ON DELETE CASCADE,
+            FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE,
+            UNIQUE(group_id, project_id)
+        )
+    ");
+
+    $pdo->exec("ALTER TABLE project_has_users ADD COLUMN role VARCHAR(25) NOT NULL DEFAULT '".Role::PROJECT_VIEWER."'");
+
+    $rq = $pdo->prepare('SELECT * FROM project_has_users');
+    $rq->execute();
+    $rows = $rq->fetchAll(PDO::FETCH_ASSOC) ?: array();
+
+    $rq = $pdo->prepare('UPDATE project_has_users SET "role"=? WHERE "id"=?');
+
+    foreach ($rows as $row) {
+        $rq->execute(array(
+            $row['is_owner'] == 1 ? Role::PROJECT_MANAGER : ROLE::PROJECT_MEMBER,
+            $row['id'],
+        ));
+    }
+
+    $pdo->exec('ALTER TABLE project_has_users DROP COLUMN "is_owner"');
+    $pdo->exec('ALTER TABLE project_has_users DROP COLUMN "id"');
+}
 
 function version_75(PDO $pdo)
 {

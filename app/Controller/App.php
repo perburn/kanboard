@@ -22,7 +22,7 @@ class App extends Base
      */
     private function layout($template, array $params)
     {
-        $params['board_selector'] = $this->projectPermission->getAllowedProjects($this->userSession->getId());
+        $params['board_selector'] = $this->projectUserRole->getProjectsByUser($this->userSession->getId());
         $params['content_for_sublayout'] = $this->template->render($template, $params);
 
         return $this->template->layout('app/layout', $params);
@@ -42,7 +42,7 @@ class App extends Base
             ->setUrl('app', $action, array('pagination' => 'projects', 'user_id' => $user_id))
             ->setMax($max)
             ->setOrder('name')
-            ->setQuery($this->project->getQueryColumnStats($this->projectPermission->getActiveMemberProjectIds($user_id)))
+            ->setQuery($this->project->getQueryColumnStats($this->projectPermission->getActiveProjectIds($user_id)))
             ->calculateOnlyIf($this->request->getStringParam('pagination') === 'projects');
     }
 
@@ -169,7 +169,7 @@ class App extends Base
 
         $this->response->html($this->layout('app/activity', array(
             'title' => t('My activity stream'),
-            'events' => $this->projectActivity->getProjects($this->projectPermission->getActiveMemberProjectIds($user['id']), 100),
+            'events' => $this->projectActivity->getProjects($this->projectPermission->getActiveProjectIds($user['id']), 100),
             'user' => $user,
         )));
     }
@@ -227,7 +227,7 @@ class App extends Base
     public function autocomplete()
     {
         $search = $this->request->getStringParam('term');
-        $projects = $this->projectPermission->getActiveMemberProjectIds($this->userSession->getId());
+        $projects = $this->projectPermission->getActiveProjectIds($this->userSession->getId());
 
         if (empty($projects)) {
             $this->response->json(array());

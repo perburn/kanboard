@@ -3,9 +3,10 @@
 namespace Schema;
 
 use Kanboard\Core\Security\Token;
+use Kanboard\Core\Security\Role;
 use PDO;
 
-const VERSION = 89;
+const VERSION = 90;
 
 function version_90(PDO $pdo)
 {
@@ -19,6 +20,21 @@ function version_90(PDO $pdo)
             UNIQUE(group_id, project_id)
         )
     ");
+
+    $pdo->exec("ALTER TABLE project_has_users ADD COLUMN role TEXT NOT NULL DEFAULT '".Role::PROJECT_VIEWER."'");
+
+    $rq = $pdo->prepare('SELECT * FROM project_has_users');
+    $rq->execute();
+    $rows = $rq->fetchAll(PDO::FETCH_ASSOC) ?: array();
+
+    $rq = $pdo->prepare('UPDATE project_has_users SET "role"=? WHERE "id"=?');
+
+    foreach ($rows as $row) {
+        $rq->execute(array(
+            $row['is_owner'] == 1 ? Role::PROJECT_MANAGER : ROLE::PROJECT_MEMBER,
+            $row['id'],
+        ));
+    }
 }
 
 function version_89(PDO $pdo)
@@ -1004,7 +1020,6 @@ function version_7(PDO $pdo)
 {
     $pdo->exec("
         CREATE TABLE project_has_users (
-            id INTEGER PRIMARY KEY,
             project_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
             FOREIGN KEY(project_id) REFERENCES projects(id) ON DELETE CASCADE,

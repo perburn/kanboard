@@ -110,17 +110,6 @@ class UserSession extends Base
     }
 
     /**
-     * Return true if the logged user is project admin
-     *
-     * @access public
-     * @return bool
-     */
-    public function isProjectAdmin()
-    {
-        return isset($this->sessionStorage->user['is_project_admin']) && $this->sessionStorage->user['is_project_admin'] === true;
-    }
-
-    /**
      * Get the connected user id
      *
      * @access public

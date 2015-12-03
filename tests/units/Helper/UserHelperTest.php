@@ -4,8 +4,9 @@ require_once __DIR__.'/../Base.php';
 
 use Kanboard\Helper\User;
 use Kanboard\Model\Project;
-use Kanboard\Model\ProjectPermission;
+use Kanboard\Model\ProjectUserRole;
 use Kanboard\Model\User as UserModel;
+use Kanboard\Core\Security\Role;
 
 class UserHelperTest extends Base
 {
@@ -16,15 +17,12 @@ class UserHelperTest extends Base
         $this->assertEquals('CN', $h->getInitials('chuck norris'));
         $this->assertEquals('A', $h->getInitials('admin'));
     }
-/*
 
-TODO: fixme
-
-    public function testIsProjectAdministrationAllowedForProjectAdmin()
+    public function testIsProjectAdministrationAllowedForApplicationManagerWhoAreProjectMember()
     {
         $h = new User($this->container);
         $p = new Project($this->container);
-        $pp = new ProjectPermission($this->container);
+        $pp = new ProjectUserRole($this->container);
         $u = new UserModel($this->container);
 
         // We create our user
@@ -32,9 +30,31 @@ TODO: fixme
 
         // We create a project and set our user as project manager
         $this->assertEquals(1, $p->create(array('name' => 'UnitTest')));
-        $this->assertTrue($pp->addMember(1, 2));
-        $this->assertTrue($pp->isMember(1, 2));
-        $this->assertFalse($pp->isManager(1, 2));
+        $this->assertTrue($pp->addUser(1, 2, Role::PROJECT_MEMBER));
+
+        // We fake a session for him
+        $this->container['sessionStorage']->user = array(
+            'id' => 2,
+            'is_admin' => false,
+            'is_project_admin' => true,
+        );
+
+        $this->assertTrue($h->isProjectAdministrationAllowed(1));
+    }
+
+    public function testIsProjectAdministrationAllowedForApplicationManagerWhoAreProjectManager()
+    {
+        $h = new User($this->container);
+        $p = new Project($this->container);
+        $pp = new ProjectUserRole($this->container);
+        $u = new UserModel($this->container);
+
+        // We create our user
+        $this->assertEquals(2, $u->create(array('username' => 'unittest', 'password' => 'unittest')));
+
+        // We create a project and set our user as project manager
+        $this->assertEquals(1, $p->create(array('name' => 'UnitTest')));
+        $this->assertTrue($pp->addUser(1, 2, Role::PROJECT_MANAGER));
 
         // We fake a session for him
         $this->container['sessionStorage']->user = array(
@@ -50,7 +70,7 @@ TODO: fixme
     {
         $h = new User($this->container);
         $p = new Project($this->container);
-        $pp = new ProjectPermission($this->container);
+        $pp = new ProjectUserRole($this->container);
         $u = new UserModel($this->container);
 
         // We create our user
@@ -58,9 +78,7 @@ TODO: fixme
 
         // We create a project and set our user as project member
         $this->assertEquals(1, $p->create(array('name' => 'UnitTest')));
-        $this->assertTrue($pp->addMember(1, 2));
-        $this->assertTrue($pp->isMember(1, 2));
-        $this->assertFalse($pp->isManager(1, 2));
+        $this->assertTrue($pp->addUser(1, 2, Role::PROJECT_MEMBER));
 
         // We fake a session for him
         $this->container['sessionStorage']->user = array(
@@ -76,7 +94,7 @@ TODO: fixme
     {
         $h = new User($this->container);
         $p = new Project($this->container);
-        $pp = new ProjectPermission($this->container);
+        $pp = new ProjectUserRole($this->container);
         $u = new UserModel($this->container);
 
         // We create our user
@@ -84,9 +102,7 @@ TODO: fixme
 
         // We create a project and set our user as project member
         $this->assertEquals(1, $p->create(array('name' => 'UnitTest')));
-        $this->assertTrue($pp->addManager(1, 2));
-        $this->assertTrue($pp->isMember(1, 2));
-        $this->assertTrue($pp->isManager(1, 2));
+        $this->assertTrue($pp->addUser(1, 2, Role::PROJECT_MANAGER));
 
         // We fake a session for him
         $this->container['sessionStorage']->user = array(
@@ -98,37 +114,11 @@ TODO: fixme
         $this->assertFalse($h->isProjectAdministrationAllowed(1));
     }
 
-    public function testIsProjectManagementAllowedForProjectAdmin()
-    {
-        $h = new User($this->container);
-        $p = new Project($this->container);
-        $pp = new ProjectPermission($this->container);
-        $u = new UserModel($this->container);
-
-        // We create our user
-        $this->assertEquals(2, $u->create(array('username' => 'unittest', 'password' => 'unittest')));
-
-        // We create a project and set our user as project manager
-        $this->assertEquals(1, $p->create(array('name' => 'UnitTest')));
-        $this->assertTrue($pp->addMember(1, 2));
-        $this->assertTrue($pp->isMember(1, 2));
-        $this->assertFalse($pp->isManager(1, 2));
-
-        // We fake a session for him
-        $this->container['sessionStorage']->user = array(
-            'id' => 2,
-            'is_admin' => false,
-            'is_project_admin' => true,
-        );
-
-        $this->assertTrue($h->isProjectManagementAllowed(1));
-    }
-
     public function testIsProjectManagementAllowedForProjectMember()
     {
         $h = new User($this->container);
         $p = new Project($this->container);
-        $pp = new ProjectPermission($this->container);
+        $pp = new ProjectUserRole($this->container);
         $u = new UserModel($this->container);
 
         // We create our user
@@ -136,9 +126,7 @@ TODO: fixme
 
         // We create a project and set our user as project member
         $this->assertEquals(1, $p->create(array('name' => 'UnitTest')));
-        $this->assertTrue($pp->addMember(1, 2));
-        $this->assertTrue($pp->isMember(1, 2));
-        $this->assertFalse($pp->isManager(1, 2));
+        $this->assertTrue($pp->addUser(1, 2, Role::PROJECT_MEMBER));
 
         // We fake a session for him
         $this->container['sessionStorage']->user = array(
@@ -154,7 +142,7 @@ TODO: fixme
     {
         $h = new User($this->container);
         $p = new Project($this->container);
-        $pp = new ProjectPermission($this->container);
+        $pp = new ProjectUserRole($this->container);
         $u = new UserModel($this->container);
 
         // We create our user
@@ -162,9 +150,7 @@ TODO: fixme
 
         // We create a project and set our user as project member
         $this->assertEquals(1, $p->create(array('name' => 'UnitTest')));
-        $this->assertTrue($pp->addManager(1, 2));
-        $this->assertTrue($pp->isMember(1, 2));
-        $this->assertTrue($pp->isManager(1, 2));
+        $this->assertTrue($pp->addUser(1, 2, Role::PROJECT_MANAGER));
 
         // We fake a session for him
         $this->container['sessionStorage']->user = array(
@@ -174,5 +160,5 @@ TODO: fixme
         );
 
         $this->assertTrue($h->isProjectManagementAllowed(1));
-    }*/
+    }
 }

@@ -18,8 +18,7 @@
                 <th><?= $paginator->order(t('Username'), 'username') ?></th>
                 <th><?= $paginator->order(t('Name'), 'name') ?></th>
                 <th><?= $paginator->order(t('Email'), 'email') ?></th>
-                <th><?= $paginator->order(t('Administrator'), 'is_admin') ?></th>
-                <th><?= $paginator->order(t('Project Administrator'), 'is_project_admin') ?></th>
+                <th><?= $paginator->order(t('Role'), 'role') ?></th>
                 <th><?= $paginator->order(t('Two factor authentication'), 'twofactor_activated') ?></th>
                 <th><?= $paginator->order(t('Notifications'), 'notifications_enabled') ?></th>
                 <th><?= $paginator->order(t('Account type'), 'is_ldap_user') ?></th>
@@ -39,10 +38,7 @@
                     <a href="mailto:<?= $this->e($user['email']) ?>"><?= $this->e($user['email']) ?></a>
                 </td>
                 <td>
-                    <?= $user['is_admin'] ? t('Yes') : t('No') ?>
-                </td>
-                <td>
-                    <?= $user['is_project_admin'] ? t('Yes') : t('No') ?>
+                    TODO
                 </td>
                 <td>
                     <?= $user['twofactor_activated'] ? t('Yes') : t('No') ?>

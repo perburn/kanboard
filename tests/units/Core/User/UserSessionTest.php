@@ -83,19 +83,6 @@ class UserSessionTest extends Base
         $this->assertTrue($us->isAdmin());
     }
 
-    public function testIsProjectAdmin()
-    {
-        $us = new UserSession($this->container);
-
-        $this->assertFalse($us->isProjectAdmin());
-
-        $this->container['sessionStorage']->user = array('is_project_admin' => false);
-        $this->assertFalse($us->isProjectAdmin());
-
-        $this->container['sessionStorage']->user = array('is_project_admin' => true);
-        $this->assertTrue($us->isProjectAdmin());
-    }
-
     public function testCommentSorting()
     {
         $us = new UserSession($this->container);

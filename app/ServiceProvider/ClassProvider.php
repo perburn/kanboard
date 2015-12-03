@@ -42,6 +42,8 @@ class ClassProvider implements ServiceProviderInterface
             'ProjectPermission',
             'ProjectNotification',
             'ProjectMetadata',
+            'ProjectGroupRole',
+            'ProjectUserRole',
             'RememberMeSession',
             'Subtask',
             'SubtaskExport',

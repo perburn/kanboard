@@ -51,7 +51,7 @@ class Board extends Base
 
         $this->response->html($this->template->layout('board/view_private', array(
             'categories_list' => $this->category->getList($params['project']['id'], false),
-            'users_list' => $this->projectPermission->getMemberList($params['project']['id'], false),
+            'users_list' => $this->projectUserRole->getAssignableUsersList($params['project']['id'], false),
             'custom_filters_list' => $this->customFilter->getAll($params['project']['id'], $this->userSession->getId()),
             'swimlanes' => $this->taskFilter->search($params['filters']['search'])->getBoard($params['project']['id']),
             'description' => $params['project']['description'],
@@ -225,7 +225,7 @@ class Board extends Base
 
         $this->response->html($this->template->render('board/popover_assignee', array(
             'values' => $task,
-            'users_list' => $this->projectPermission->getMemberList($project['id']),
+            'users_list' => $this->projectUserRole->getAssignableUsersList($project['id']),
             'project' => $project,
         )));
     }

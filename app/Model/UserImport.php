@@ -36,7 +36,7 @@ class UserImport extends Base
             'email'            => 'Email',
             'name'             => 'Full Name',
             'is_admin'         => 'Administrator',
-            'is_project_admin' => 'Project Administrator',
+            'is_project_admin' => 'Manager',
             'is_ldap_user'     => 'Remote User',
         );
     }

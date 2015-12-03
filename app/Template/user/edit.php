@@ -24,7 +24,7 @@
 
     <?php if ($this->user->isAdmin()): ?>
         <?= $this->form->checkbox('is_admin', t('Administrator'), 1, isset($values['is_admin']) && $values['is_admin'] == 1) ?>
-        <?= $this->form->checkbox('is_project_admin', t('Project Administrator'), 1, isset($values['is_project_admin']) && $values['is_project_admin'] == 1) ?>
+        <?= $this->form->checkbox('is_project_admin', t('Manager'), 1, isset($values['is_project_admin']) && $values['is_project_admin'] == 1) ?>
     <?php endif ?>
 
     <div class="form-actions">

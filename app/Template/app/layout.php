@@ -1,7 +1,7 @@
 <section id="main">
     <div class="page-header page-header-mobile">
         <ul>
-            <?php if ($this->user->isProjectAdmin() || $this->user->isAdmin()): ?>
+            <?php if ($this->user->isManager() || $this->user->isAdmin()): ?>
                 <li>
                     <i class="fa fa-plus fa-fw"></i>
                     <?= $this->url->link(t('New project'), 'project', 'create') ?>
