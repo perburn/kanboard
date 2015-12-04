@@ -14,40 +14,6 @@ use Kanboard\Core\Security\Role;
 abstract class Base extends \Kanboard\Core\Base
 {
     /**
-     * Constructor
-     *
-     * @access public
-     * @param  \Pimple\Container   $container
-     */
-    public function __construct(Container $container)
-    {
-        parent::__construct($container);
-
-        if (DEBUG) {
-            $this->logger->debug('START_REQUEST='.$_SERVER['REQUEST_URI']);
-        }
-    }
-
-    /**
-     * Destructor
-     *
-     * @access public
-     */
-    public function __destruct()
-    {
-        if (DEBUG) {
-            foreach ($this->db->getLogMessages() as $message) {
-                $this->logger->debug($message);
-            }
-
-            $this->logger->debug('SQL_QUERIES={nb}', array('nb' => $this->container['db']->nbQueries));
-            $this->logger->debug('RENDERING={time}', array('time' => microtime(true) - @$_SERVER['REQUEST_TIME_FLOAT']));
-            $this->logger->debug('MEMORY='.$this->helper->text->bytes(memory_get_usage()));
-            $this->logger->debug('END_REQUEST='.$_SERVER['REQUEST_URI']);
-        }
-    }
-
-    /**
      * Method executed before each action
      *
      * @access public

@@ -18,4 +18,18 @@ class BootstrapSubscriber extends \Kanboard\Core\Base implements EventSubscriber
         $this->config->setupTranslations();
         $this->config->setupTimezone();
     }
+
+    public function __destruct()
+    {
+        if (DEBUG) {
+            foreach ($this->db->getLogMessages() as $message) {
+                $this->logger->debug($message);
+            }
+
+            $this->logger->debug('SQL_QUERIES={nb}', array('nb' => $this->container['db']->nbQueries));
+            $this->logger->debug('RENDERING={time}', array('time' => microtime(true) - $this->request->getStartTime()));
+            $this->logger->debug('MEMORY='.$this->helper->text->bytes(memory_get_usage()));
+            $this->logger->debug('URI='.$this->request->getUri());
+        }
+    }
 }

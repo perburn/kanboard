@@ -278,4 +278,15 @@ class Request extends Base
 
         return t('Unknown');
     }
+
+    /**
+     * Get start time
+     *
+     * @access public
+     * @return float
+     */
+    public function getStartTime()
+    {
+        return isset($this->server['REQUEST_TIME_FLOAT']) ? $this->server['REQUEST_TIME_FLOAT'] : 0;
+    }
 }
