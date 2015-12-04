@@ -79,7 +79,8 @@ class AuthenticationProvider implements ServiceProviderInterface
 
         $acl->add('Action', '*', Role::PROJECT_MANAGER);
         $acl->add('Analytic', '*', Role::PROJECT_MANAGER);
-        $acl->add('Board', array('save', 'changeAssignee', 'updateAssignee', 'changeCategory', 'updateCategory'), Role::PROJECT_MEMBER);
+        $acl->add('Board', 'save', Role::PROJECT_MEMBER);
+        $acl->add('BoardPopover', '*', Role::PROJECT_MEMBER);
         $acl->add('Calendar', 'save', Role::PROJECT_MEMBER);
         $acl->add('Category', '*', Role::PROJECT_MANAGER);
         $acl->add('Column', '*', Role::PROJECT_MANAGER);
