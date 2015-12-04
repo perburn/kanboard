@@ -39,7 +39,7 @@ class UserHelperTest extends Base
             'is_project_admin' => true,
         );
 
-        $this->assertTrue($h->isProjectAdministrationAllowed(1));
+        $this->assertTrue($h->hasProjectAccess('project', 'create', 1));
     }
 
     public function testIsProjectAdministrationAllowedForApplicationManagerWhoAreProjectManager()
@@ -63,7 +63,8 @@ class UserHelperTest extends Base
             'is_project_admin' => true,
         );
 
-        $this->assertTrue($h->isProjectAdministrationAllowed(1));
+        $this->assertTrue($h->hasProjectAccess('project', 'create', 1));
+        $this->assertTrue($h->hasProjectAccess('project', 'edit', 1));
     }
 
     public function testIsProjectAdministrationAllowedForProjectMember()
@@ -87,7 +88,8 @@ class UserHelperTest extends Base
             'is_project_admin' => false,
         );
 
-        $this->assertFalse($h->isProjectAdministrationAllowed(1));
+        $this->assertFalse($h->hasProjectAccess('project', 'create', 1));
+        $this->assertFalse($h->hasProjectAccess('project', 'edit', 1));
     }
 
     public function testIsProjectAdministrationAllowedForProjectManager()
@@ -111,7 +113,8 @@ class UserHelperTest extends Base
             'is_project_admin' => false,
         );
 
-        $this->assertFalse($h->isProjectAdministrationAllowed(1));
+        $this->assertFalse($h->hasProjectAccess('project', 'create', 1));
+        $this->assertTrue($h->hasProjectAccess('project', 'edit', 1));
     }
 
     public function testIsProjectManagementAllowedForProjectMember()
@@ -135,7 +138,8 @@ class UserHelperTest extends Base
             'is_project_admin' => false,
         );
 
-        $this->assertFalse($h->isProjectManagementAllowed(1));
+        $this->assertFalse($h->hasProjectAccess('project', 'create', 1));
+        $this->assertFalse($h->hasProjectAccess('project', 'edit', 1));
     }
 
     public function testIsProjectManagementAllowedForProjectManager()
@@ -159,6 +163,7 @@ class UserHelperTest extends Base
             'is_project_admin' => false,
         );
 
-        $this->assertTrue($h->isProjectManagementAllowed(1));
+        $this->assertFalse($h->hasProjectAccess('project', 'create', 1));
+        $this->assertTrue($h->hasProjectAccess('project', 'edit', 1));
     }
 }

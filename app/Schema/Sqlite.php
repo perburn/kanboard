@@ -8,6 +8,29 @@ use PDO;
 
 const VERSION = 90;
 
+function version_91(PDO $pdo)
+{
+    $pdo->exec("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT '".Role::APP_USER."'");
+
+    $rq = $pdo->prepare('SELECT * FROM users');
+    $rq->execute();
+    $rows = $rq->fetchAll(PDO::FETCH_ASSOC) ?: array();
+
+    $rq = $pdo->prepare('UPDATE users SET "role"=? WHERE "id"=?');
+
+    foreach ($rows as $row) {
+        $role = Role::APP_USER;
+
+        if ($row['is_admin'] == 1) {
+            $role = Role::APP_ADMIN;
+        } else if ($row['is_project_admin']) {
+            $role = Role::APP_MANAGER;
+        }
+
+        $rq->execute(array($role, $row['id']));
+    }
+}
+
 function version_90(PDO $pdo)
 {
     $pdo->exec("

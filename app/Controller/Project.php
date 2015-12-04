@@ -160,11 +160,11 @@ class Project extends Base
         $values = $this->request->getValues();
 
         if (isset($values['is_private'])) {
-            if (! $this->helper->user->isProjectAdministrationAllowed($project['id'])) {
+            if (! $this->helper->user->hasProjectAccess('project', 'create', $project['id'])) {
                 unset($values['is_private']);
             }
         } elseif ($project['is_private'] == 1 && ! isset($values['is_private'])) {
-            if ($this->helper->user->isProjectAdministrationAllowed($project['id'])) {
+            if ($this->helper->user->hasProjectAccess('project', 'create', $project['id'])) {
                 $values += array('is_private' => 0);
             }
         }
@@ -299,15 +299,26 @@ class Project extends Base
      */
     public function create(array $values = array(), array $errors = array())
     {
-        $is_private = $this->request->getIntegerParam('private', $this->userSession->isAdmin() || $this->helper->user->isManager() ? 0 : 1);
+        $is_private = isset($values['is_private']) && $values['is_private'] == 1;
 
         $this->response->html($this->template->layout('project/new', array(
             'board_selector' => $this->projectUserRole->getProjectsByUser($this->userSession->getId()),
-            'values' => empty($values) ? array('is_private' => $is_private) : $values,
+            'values' => $values,
             'errors' => $errors,
             'is_private' => $is_private,
             'title' => $is_private ? t('New private project') : t('New project'),
         )));
+    }
+
+    /**
+     * Display a form to create a private project
+     *
+     * @access public
+     */
+    public function createPrivate(array $values = array(), array $errors = array())
+    {
+        $values['is_private'] = 1;
+        $this->create($values, $errors);
     }
 
     /**

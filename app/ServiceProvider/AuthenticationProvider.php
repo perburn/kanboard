@@ -88,7 +88,7 @@ class AuthenticationProvider implements ServiceProviderInterface
         $acl->add('Export', '*', Role::PROJECT_MANAGER);
         $acl->add('File', array('screenshot', 'create', 'save', 'remove', 'confirm'), Role::PROJECT_MEMBER);
         $acl->add('Gantt', '*', Role::PROJECT_MANAGER);
-        $acl->add('Project', array('share', 'integrations', 'notifications', 'edit', 'update', 'duplicate', 'disable', 'enable'), Role::PROJECT_MANAGER);
+        $acl->add('Project', array('share', 'integrations', 'notifications', 'edit', 'update', 'duplicate', 'disable', 'enable', 'remove'), Role::PROJECT_MANAGER);
         $acl->add('ProjectPermission', '*', Role::PROJECT_MANAGER);
         $acl->add('Projectuser', '*', Role::PROJECT_MANAGER);
         $acl->add('Subtask', '*', Role::PROJECT_MEMBER);
@@ -132,7 +132,7 @@ class AuthenticationProvider implements ServiceProviderInterface
         $acl->add('Gantt', '*', Role::APP_MANAGER);
         $acl->add('Group', '*', Role::APP_ADMIN);
         $acl->add('Link', '*', Role::APP_ADMIN);
-        $acl->add('Project', array('users', 'allowEverybody', 'allow', 'role', 'revoke', 'remove'), Role::APP_MANAGER);
+        $acl->add('Project', array('users', 'allowEverybody', 'allow', 'role', 'revoke', 'create'), Role::APP_MANAGER);
         $acl->add('ProjectPermission', '*', Role::APP_MANAGER);
         $acl->add('Projectuser', '*', Role::APP_MANAGER);
         $acl->add('Twofactor', 'disable', Role::APP_ADMIN);

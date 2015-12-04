@@ -15,15 +15,21 @@
 
 <?= $this->hook->render('template:project:dropdown', array('project' => $project)) ?>
 
-<?php if ($this->user->isProjectManagementAllowed($project['id'])): ?>
+<?php if ($this->user->hasProjectAccess('analytic', 'tasks', $project['id'])): ?>
     <li>
         <i class="fa fa-line-chart fa-fw"></i>&nbsp;
         <?= $this->url->link(t('Analytics'), 'analytic', 'tasks', array('project_id' => $project['id'])) ?>
     </li>
+<?php endif ?>
+
+<?php if ($this->user->hasProjectAccess('export', 'tasks', $project['id'])): ?>
     <li>
         <i class="fa fa-download fa-fw"></i>&nbsp;
         <?= $this->url->link(t('Exports'), 'export', 'tasks', array('project_id' => $project['id'])) ?>
     </li>
+<?php endif ?>
+
+<?php if ($this->user->hasProjectAccess('project', 'edit', $project['id'])): ?>
     <li>
         <i class="fa fa-cog fa-fw"></i>&nbsp;
         <?= $this->url->link(t('Settings'), 'project', 'show', array('project_id' => $project['id'])) ?>

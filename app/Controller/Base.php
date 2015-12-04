@@ -21,7 +21,7 @@ abstract class Base extends \Kanboard\Core\Base
      */
     public function __construct(Container $container)
     {
-        $this->container = $container;
+        parent::__construct($container);
 
         if (DEBUG) {
             $this->logger->debug('START_REQUEST='.$_SERVER['REQUEST_URI']);
@@ -130,7 +130,7 @@ abstract class Base extends \Kanboard\Core\Base
      */
     private function checkApplicationAuthorization($controller, $action)
     {
-        if (! $this->applicationAuthorization->isAllowed($controller, $action, $this->userSession->getRole())) {
+        if (! $this->helper->user->hasAccess($controller, $action)) {
             $this->forbidden();
         }
     }
@@ -150,12 +150,8 @@ abstract class Base extends \Kanboard\Core\Base
             $project_id = $this->taskFinder->getProjectId($task_id);
         }
 
-        if ($project_id > 0) {
-            $role = $this->projectUserRole->getUserRole($project_id, $this->userSession->getId());
-
-            if (! $this->projectAuthorization->isAllowed($controller, $action, $role)) {
-                $this->forbidden();
-            }
+        if ($project_id > 0 && ! $this->helper->user->hasProjectAccess($controller, $action, $project_id)) {
+            $this->forbidden();
         }
     }
 
@@ -181,6 +177,10 @@ abstract class Base extends \Kanboard\Core\Base
      */
     protected function forbidden($no_layout = false)
     {
+        if ($this->request->isAjax()) {
+            $this->response->text('Not Authorized', 401);
+        }
+
         $this->response->html($this->template->layout('app/forbidden', array(
             'title' => t('Access Forbidden'),
             'no_layout' => $no_layout,
